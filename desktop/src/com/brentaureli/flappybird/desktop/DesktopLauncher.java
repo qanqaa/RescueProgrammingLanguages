@@ -7,9 +7,10 @@ import com.brentaureli.game.QuizGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1024;
-        config.height = 768;
+        config.width =  QuizGame.WIDTH;
+        config.height = QuizGame.HEIGHT;
         config.title = QuizGame.TITLE;
+        config.resizable = false;
 		new LwjglApplication(new QuizGame(), config);
 	}
 }

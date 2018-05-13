@@ -10,9 +10,6 @@ import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.sprites.Player;
 import com.brentaureli.game.sprites.Option;
 
-/**
- * Created by Brent on 7/5/2015.
- */
 public class PlayState extends State {
     private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT = 10;

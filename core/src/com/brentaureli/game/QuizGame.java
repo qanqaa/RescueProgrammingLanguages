@@ -9,9 +9,9 @@ import com.brentaureli.game.states.MenuState;
 
 public class QuizGame extends ApplicationAdapter {
     public static final int WIDTH = 1024;
-    public static final int HEIGHT = 768;
+    public static final int HEIGHT = 726;
 
-    public static final String TITLE = "Flappy Bird";
+    public static final String TITLE = "Rescue Programming Languages";
     private GameStateManager gsm;
     private SpriteBatch batch;
 
