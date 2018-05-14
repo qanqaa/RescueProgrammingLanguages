@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.brentaureli.game.QuizGame;
-import com.brentaureli.game.sprites.Player;
+import com.brentaureli.game.questions.Question;
+import com.brentaureli.game.questions.QuestionManager;
 import com.brentaureli.game.sprites.Option;
+import com.brentaureli.game.sprites.Player;
+
+import java.util.List;
 
 public class PlayState extends State {
     private static final int TUBE_SPACING = 125;
@@ -18,7 +22,8 @@ public class PlayState extends State {
     private Player player;
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
-
+    private QuestionManager questionManager = new QuestionManager();
+    List<Question> questionsForStage;
     private Array<Option> tubes;
 
     public PlayState(GameStateManager gsm) {
@@ -29,7 +34,9 @@ public class PlayState extends State {
         groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
         groundPos2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
 
-        tubes = new Array<Option>();
+        questionsForStage = questionManager.prepareQuestionsForStage(1);
+
+        tubes = new Array<>();
 
         for(int i = 1; i <= TUBE_COUNT; i++){
             tubes.add(new Option(i * (1500)));
