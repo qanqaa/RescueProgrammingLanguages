@@ -4,34 +4,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.brentaureli.game.questions.Question;
 
 import java.util.Random;
 
-/**
- * Created by brentaureli on 7/15/15.
- */
 public class Option {
-    public static final int TUBE_WIDTH = 52;
 
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBotTube;
     private Rectangle boundsTop, boundsBot;
+    private Question question;
     private Random rand;
 
 
-    public Option(float y){
+    public Option(float y, Question question) {
+        this.question = question;
         topTube = new Texture("tube.png");
         bottomTube = new Texture("tube.png");
         rand = new Random();
 
 
-        posTopTube = new Vector2(-50, y);
+        posTopTube = new Vector2(0, y);
         posBotTube = new Vector2(250, y);
 
-        if(rand.nextDouble()>0.5){
+        if (question.getCorrectAnswer() == 2) {
             topTube = new Texture("tube2.png");
-            boundsTop = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
-            boundsBot = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
+            boundsTop = new Rectangle(posTopTube.x, posTopTube.y, 250, topTube.getHeight());
+            boundsBot = new Rectangle(posTopTube.x, posTopTube.y, 250, topTube.getHeight());
         }
         else{
             bottomTube = new Texture("tube2.png");
@@ -66,6 +65,54 @@ public class Option {
 
     public boolean collides(Rectangle player){
         return player.overlaps(boundsTop) || player.overlaps(boundsBot);
+    }
+
+    public void setTopTube(Texture topTube) {
+        this.topTube = topTube;
+    }
+
+    public void setBottomTube(Texture bottomTube) {
+        this.bottomTube = bottomTube;
+    }
+
+    public void setPosTopTube(Vector2 posTopTube) {
+        this.posTopTube = posTopTube;
+    }
+
+    public void setPosBotTube(Vector2 posBotTube) {
+        this.posBotTube = posBotTube;
+    }
+
+    public Rectangle getBoundsTop() {
+        return boundsTop;
+    }
+
+    public void setBoundsTop(Rectangle boundsTop) {
+        this.boundsTop = boundsTop;
+    }
+
+    public Rectangle getBoundsBot() {
+        return boundsBot;
+    }
+
+    public void setBoundsBot(Rectangle boundsBot) {
+        this.boundsBot = boundsBot;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public Random getRand() {
+        return rand;
+    }
+
+    public void setRand(Random rand) {
+        this.rand = rand;
     }
 
     public void dispose(){

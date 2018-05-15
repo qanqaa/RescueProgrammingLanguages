@@ -3,28 +3,29 @@ package com.brentaureli.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.questions.Question;
 import com.brentaureli.game.questions.QuestionManager;
 import com.brentaureli.game.sprites.Option;
 import com.brentaureli.game.sprites.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayState extends State {
-    private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT = 10;
     private static final int GROUND_Y_OFFSET = -50;
-
+    BitmapFont font = new BitmapFont();
     private Player player;
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
     private QuestionManager questionManager = new QuestionManager();
     List<Question> questionsForStage;
-    private Array<Option> tubes;
+    private List<Option> options;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -36,10 +37,10 @@ public class PlayState extends State {
 
         questionsForStage = questionManager.prepareQuestionsForStage(1);
 
-        tubes = new Array<>();
+        options = new ArrayList<>();
 
-        for(int i = 1; i <= TUBE_COUNT; i++){
-            tubes.add(new Option(i * (1500)));
+        for (int i = 0; i < TUBE_COUNT; i++) {
+            options.add(new Option((i + 1) * (1500), questionsForStage.get(i)));
         }
     }
 
@@ -62,8 +63,8 @@ public class PlayState extends State {
 
         cam.position.y = player.getPosition().y + 100;
 
-        for(int i = 0; i < tubes.size; i++){
-            Option tube = tubes.get(i);
+        for (int i = 0; i < options.size(); i++) {
+            Option tube = options.get(i);
 
 //            if(cam.position.x - (cam.viewportWidth / 2) > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
 //                tube.reposition(tube.getPosTopTube().x  + ((Option.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
@@ -84,9 +85,17 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
-        for(Option tube : tubes) {
-            sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
-            sb.draw(tube.getBottomTube(), tube.getPosBotTube().x, tube.getPosBotTube().y);
+        int i = 0;
+        for (Option option : options) {
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y);
+            Question question = option.getQuestion();
+            GlyphLayout glyphLayout = new GlyphLayout();
+            glyphLayout.setText(font, question.getQuestion());
+            float w = glyphLayout.width;
+            font.draw(sb, glyphLayout, (500 - w) / 2, option.getPosTopTube().y - 200);
+            font.draw(sb, question.getAnswers().get(0), option.getPosTopTube().x, option.getPosTopTube().y);
+            font.draw(sb, question.getAnswers().get(1), option.getPosBotTube().x, option.getPosBotTube().y);
         }
 
         sb.draw(ground, groundPos1.x, groundPos1.y);
@@ -98,9 +107,9 @@ public class PlayState extends State {
     public void dispose() {
         player.dispose();
         ground.dispose();
-        for(Option tube : tubes)
+        for (Option tube : options)
             tube.dispose();
-
+        font.dispose();
     }
 
     private void updateGround(){
