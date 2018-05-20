@@ -28,7 +28,7 @@ public class PlayState extends State {
     private List<Option> options;
 
     //TODO: constructor with stages
-    public PlayState(GameStateManager gsm) {
+    public PlayState(GameStateManager gsm, int stage) {
         super(gsm);
         player = new Player(50, 300);
         cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
@@ -36,7 +36,7 @@ public class PlayState extends State {
         groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
         groundPos2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
 
-        questionsForStage = questionManager.prepareQuestionsForStage(1);
+        questionsForStage = questionManager.prepareQuestionsForStage(stage);
 
         options = new ArrayList<>();
 
