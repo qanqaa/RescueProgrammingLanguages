@@ -27,6 +27,7 @@ public class PlayState extends State {
     List<Question> questionsForStage;
     private List<Option> options;
 
+    //TODO: constructor with stages
     public PlayState(GameStateManager gsm) {
         super(gsm);
         player = new Player(50, 300);
