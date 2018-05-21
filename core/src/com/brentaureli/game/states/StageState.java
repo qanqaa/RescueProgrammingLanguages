@@ -1,6 +1,7 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -51,15 +52,15 @@ public class StageState extends State {
 //        if(Gdx.input.getX() < start_x + START_BUTTON_WIDTH && Gdx.input.getX() > start_x && QuizGame.HEIGHT - Gdx.input.getY() < START_BUTTON_Y + START_BUTTON_HEIGHT && QuizGame.HEIGHT - Gdx.input.getY() > START_BUTTON_Y) {
 //            // wczytaj nową teksturę
 //        }
-
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            gsm.set(new MenuState(gsm));
+        }
         if (Gdx.input.isTouched()) {
             Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 //            // texture x is the x position of the texture
 //            // texture y is the y position of the texture
 //            // texturewidth is the width of the texture (you can get it with texture.getWidth() or textureRegion.getRegionWidth() if you have a texture region
 //            // textureheight is the height of the texture (you can get it with texture.getHeight() or textureRegion.getRegionhHeight() if you have a texture region
-            Gdx.app.log("x:", String.valueOf(tmp.x));
-            Gdx.app.log("y:", String.valueOf(tmp.y));
             if (stage1.contains(tmp.x, tmp.y)) {
                 gsm.set(new PlayState(gsm, 1));
             } else if (stage2.contains(tmp.x, tmp.y)) {
@@ -106,11 +107,6 @@ public class StageState extends State {
 
     @Override
     public void dispose() {
-//        background.dispose();
-//        playBtn.dispose();
-//        exitBtn.dispose();
-//        profileBtn.dispose();
-//        scoresBtn.dispose();
         font.dispose();
 
     }

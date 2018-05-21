@@ -4,13 +4,22 @@ import com.brentaureli.game.profiles.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerScoreManagerMock {
 
+    private List<PlayerScore> playerScores = new ArrayList<>();
 
-    public static List<PlayerScore> list10PlayerScores() {
-        List<PlayerScore> playerScores = new ArrayList<>();
+    private static PlayerScoreManagerMock instance = null;
 
+    public static PlayerScoreManagerMock getInstance() {
+        if (instance == null) {
+            instance = new PlayerScoreManagerMock();
+        }
+        return instance;
+    }
+
+    public List<PlayerScore> prepare10Players() {
         playerScores.add(new PlayerScore(new Profile("2131"), 10));
         playerScores.add(new PlayerScore(new Profile("2231"), 20));
         playerScores.add(new PlayerScore(new Profile("2434241"), 30));
@@ -21,12 +30,11 @@ public class PlayerScoreManagerMock {
         playerScores.add(new PlayerScore(new Profile("2asdzxcz131"), 80));
         playerScores.add(new PlayerScore(new Profile("2daf131"), 90));
         playerScores.add(new PlayerScore(new Profile("vxcvxv2131"), 100));
-        playerScores.sort((p1, p2) -> p2.getScore() - p1.getScore());
+        sortDescending();
         return playerScores;
     }
 
-    public static List<PlayerScore> list20PlayerScores() {
-        List<PlayerScore> playerScores = new ArrayList<>();
+    public List<PlayerScore> prepare20Players() {
 
         playerScores.add(new PlayerScore(new Profile("2131"), 10));
         playerScores.add(new PlayerScore(new Profile("2231"), 20));
@@ -48,8 +56,32 @@ public class PlayerScoreManagerMock {
         playerScores.add(new PlayerScore(new Profile("2asdzxcz131"), 88));
         playerScores.add(new PlayerScore(new Profile("2daf131"), 99));
         playerScores.add(new PlayerScore(new Profile("vxcvxv2131"), 1110));
-        playerScores.sort((p1, p2) -> p2.getScore() - p1.getScore());
+        sortDescending();
         return playerScores;
+    }
+
+    private void sortDescending() {
+        playerScores.sort((p1, p2) -> p2.getScore() - p1.getScore());
+    }
+
+    public int getHighestScore() {
+        if (playerScores.size() > 0) {
+            return playerScores.get(0).getScore();
+        }
+        return 0;
+    }
+
+    public void updateScore(PlayerScore playerScore) {
+        Optional<PlayerScore> playerScoreToUpdate = playerScores.stream().filter(o -> o.getProfile().getName().equals(playerScore.getProfile().getName())).findFirst();
+        if (!playerScoreToUpdate.isPresent()) {
+            playerScores.add(playerScore);
+        } else {
+            PlayerScore playerScoreInList = playerScoreToUpdate.get();
+            if (playerScoreInList.getScore() < playerScore.getScore()) {
+                playerScores.set(playerScores.indexOf(playerScoreInList), playerScore);
+            }
+        }
+        sortDescending();
     }
 
 

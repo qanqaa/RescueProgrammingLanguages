@@ -5,12 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.brentaureli.game.QuizGame;
-import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MenuState extends State{
 
@@ -56,14 +53,8 @@ public class MenuState extends State{
     private Texture scoresBtn;
 
     public MenuState(GameStateManager gsm) {
+        //TODO: LOAD PROFILE FROM MEMORY/CACHE/DATABASE?
         super(gsm);
-        Map<Integer, Integer> stageScoreMap = new HashMap<>();
-        stageScoreMap.put(1, 1231);
-        stageScoreMap.put(2, 231414);
-        stageScoreMap.put(3, 341414);
-        Profile profile1 = new Profile("Abcsada");
-        profile1.setStageScoreMap(stageScoreMap);
-        profileManager.setCurrentProfile(profile1);
 
 //        cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
 //        background = new Texture("bg.png");

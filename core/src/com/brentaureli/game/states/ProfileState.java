@@ -5,32 +5,36 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.brentaureli.game.scores.PlayerScore;
-import com.brentaureli.game.scores.PlayerScoreManagerMock;
-
-import java.util.List;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.brentaureli.game.profiles.Profile;
+import com.brentaureli.game.profiles.ProfileManager;
 
 public class ProfileState extends State {
-
-
-    private List<PlayerScore> playerScoreList;
+    private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+    private int gameWidth = Gdx.graphics.getWidth();
+    private int gameHeight = Gdx.graphics.getHeight();
     private BitmapFont font;
-
+    private String nameText = ProfileManager.getInstance().getCurrentProfile().getName();
+    private String questionsTimeFieldtext = String.valueOf(ProfileManager.getInstance().getCurrentProfile().getTimeForQuestion());
+    private TextField nameField = new TextField(nameText, skin);
+    private TextField questionsTimeField = new TextField(questionsTimeFieldtext, skin);
+    Stage stage = new Stage();
     public ProfileState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
-        //TODO: IMPLEMENT DATABASE HIGHSCORES
-        //playerScoreList = PlayerScoreManager.getTop10HighScores();
-        playerScoreList = PlayerScoreManagerMock.list20PlayerScores();
-        if (playerScoreList.size() > 10) {
-            playerScoreList.subList(10, playerScoreList.size()).clear();
-        }
+
 
     }
 
     @Override
     public void handleInput() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            gsm.set(new MenuState(gsm));
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+            ProfileManager.getInstance().setCurrentProfile(new Profile(nameField.getText(), Double.parseDouble(questionsTimeField.getText())));
             gsm.set(new MenuState(gsm));
         }
     }
@@ -40,35 +44,26 @@ public class ProfileState extends State {
         handleInput();
     }
 
-    //TODO: add FreeTypeFontGenerator to get scalable bitmap fonts
 
     @Override
     public void render(SpriteBatch sb) {
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-
         GlyphLayout layout = new GlyphLayout();
-        layout.setText(font, "HIGH SCORES");
+        layout.setText(font, "CURRENT PROFILE");
         sb.begin();
-
-        int nameWidth = width / 6;
-        int scoreWidth = 2 * width / 3;
-        //TODO: ADD PROFILE PHOTOS?
-        // int photoWidth = width/7;
-
-        font.getData().setScale(2, 2);
-        font.draw(sb, "HIGH SCORES", (width / 2) - (layout.width / 2), height - 50);
-        font.draw(sb, "NAME", nameWidth, height - 150);
-        font.draw(sb, "SCORE", scoreWidth, height - 150);
-
-        height -= 200;
-        for (PlayerScore playerScore : playerScoreList) {
-            height -= 40;
-            font.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
-            font.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
-            //TODO: RENDER PFOILE PHOTOS FOR EACH SCORE?
-        }
+//        font.getData().setScale(2, 2);
+        font.draw(sb, "CURRENT PROFILE", (gameWidth / 2) - (layout.width / 2), gameHeight - 50);
+        font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 150);
+        font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 200);
         sb.end();
+        nameField.setPosition(gameWidth / 2, gameHeight - 180);
+        nameField.setSize(150, 40);
+        questionsTimeField.setPosition(gameWidth / 2, gameHeight - 230);
+        questionsTimeField.setSize(50, 40);
+        stage.addActor(nameField);
+        stage.addActor(questionsTimeField);
+        Gdx.input.setInputProcessor(stage);
+        stage.draw();
+        stage.act();
     }
 
     @Override

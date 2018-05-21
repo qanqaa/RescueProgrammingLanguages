@@ -21,7 +21,7 @@ public class ScoresState extends State {
         font = new BitmapFont();
         //TODO: IMPLEMENT DATABASE HIGHSCORES
         //playerScoreList = PlayerScoreManager.getTop10HighScores();
-        playerScoreList = PlayerScoreManagerMock.list20PlayerScores();
+        playerScoreList = PlayerScoreManagerMock.getInstance().prepare20Players();
         if (playerScoreList.size() > 10) {
             playerScoreList.subList(10, playerScoreList.size()).clear();
         }
@@ -53,7 +53,7 @@ public class ScoresState extends State {
 
         int nameWidth = width / 6;
         int scoreWidth = 2 * width / 3;
-        //TODO: ADD PROFILE PHOTOS?
+        //TODO: profile photos?
         // int photoWidth = width/7;
 
         font.getData().setScale(2, 2);
@@ -66,7 +66,7 @@ public class ScoresState extends State {
             height -= 40;
             font.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
             font.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
-            //TODO: RENDER PFOILE PHOTOS FOR EACH SCORE?
+            //TODO: render photos for each score?
         }
         sb.end();
     }

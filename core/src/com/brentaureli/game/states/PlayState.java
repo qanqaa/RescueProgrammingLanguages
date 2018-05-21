@@ -2,47 +2,75 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.brentaureli.game.QuizGame;
+import com.brentaureli.game.profiles.Profile;
+import com.brentaureli.game.profiles.ProfileManager;
 import com.brentaureli.game.questions.Question;
 import com.brentaureli.game.questions.QuestionManager;
+import com.brentaureli.game.scores.PlayerScore;
+import com.brentaureli.game.scores.PlayerScoreManagerMock;
 import com.brentaureli.game.sprites.Option;
 import com.brentaureli.game.sprites.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PlayState extends State {
-    private static final int TUBE_COUNT = 10;
-    private static final int GROUND_Y_OFFSET = -50;
-    BitmapFont font = new BitmapFont();
-    private Player player;
-    private Texture ground;
-    private Vector2 groundPos1, groundPos2;
-    private QuestionManager questionManager = new QuestionManager();
-    List<Question> questionsForStage;
-    private List<Option> options;
+    private Profile currentProfile;
 
-    //TODO: constructor with stages
+
+    private int gameWidth = Gdx.graphics.getWidth();
+    private int gameHeight = Gdx.graphics.getHeight();
+    private static final int OPTIONS_AMOUNT = 10;
+    private int currentQuestion = 0;
+    private BitmapFont font = new BitmapFont();
+    private int velocity = 100;
+    private Player player;
+    private QuestionManager questionManager = new QuestionManager();
+    private List<Question> questionsForStage;
+    private OrthographicCamera guiCam;
+    private List<Option> options;
+    private long timeSinceStart;
+    private int score;
+    private int stageInfoTimeSeconds = 5;
+    private double timeForQuestion;
+    private double timeBetweenQuestions;
+
+    private int stage;
+
+
     public PlayState(GameStateManager gsm, int stage) {
         super(gsm);
+        this.stage = stage;
+        timeSinceStart = System.currentTimeMillis();
+        guiCam = new OrthographicCamera();
+        guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         player = new Player(50, 300);
         cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
-        ground = new Texture("ground.png");
-        groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
-        groundPos2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
+
+        currentProfile = ProfileManager.getInstance().getCurrentProfile();
+        timeForQuestion = currentProfile.getTimeForQuestion();
+        timeBetweenQuestions = timeForQuestion / 2;
 
         questionsForStage = questionManager.prepareQuestionsForStage(stage);
 
-        options = new ArrayList<>();
+        score = 0;
 
-        for (int i = 0; i < TUBE_COUNT; i++) {
-            options.add(new Option((i + 1) * (1500), questionsForStage.get(i)));
+        options = setGameDifficulty();
+    }
+
+    private List<Option> setGameDifficulty() {
+        options = new ArrayList<>();
+        for (int i = 0; i < OPTIONS_AMOUNT; i++) {
+            float gameSpeed1s = velocity * 2.2f;
+            options.add(new Option((float) (gameSpeed1s * (stageInfoTimeSeconds + (i + 1) * (timeForQuestion) + timeBetweenQuestions * i)), questionsForStage.get(i)));
         }
+        return options;
     }
 
     @Override
@@ -56,29 +84,45 @@ public class PlayState extends State {
             player.jump();
     }
 
+    private void updateScore() {
+        score += 1;
+    }
+
     @Override
     public void update(float dt) {
         handleInput();
-        updateGround();
         player.update(dt);
 
-        cam.position.y = player.getPosition().y + 100;
+        cam.position.y = player.getPosition().y + velocity;
 
         for (int i = 0; i < options.size(); i++) {
             Option tube = options.get(i);
 
-//            if(cam.position.x - (cam.viewportWidth / 2) > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
-//                tube.reposition(tube.getPosTopTube().x  + ((Option.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
-//            }
-
-            if(tube.collides(player.getBounds()))
-                gsm.set(new MenuState(gsm));
+            if (tube.getPosTopTube().y - player.getPosition().y < 5) {
+                updateScore();
+            }
+            if (tube.collides(player.getBounds())) {
+                gsm.set(new EndGameState(gsm, score, checkPlayerHighScore(score)));
+            }
         }
-
-        if(player.getPosition().y <= ground.getHeight() + GROUND_Y_OFFSET)
-            gsm.set(new MenuState(gsm));
         cam.update();
 
+    }
+
+    private boolean checkPlayerHighScore(int score) {
+        Map<Integer, Integer> currentProfileStageScoreMap = currentProfile.getStageScoreMap();
+        if (score > currentProfileStageScoreMap.get(stage)) {
+            currentProfileStageScoreMap.put(stage, score);
+            PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
+            return true;
+        }
+        PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
+        return false;
+    }
+
+    private int calculateOverallScore() {
+        Map<Integer, Integer> stageScoreMap = currentProfile.getStageScoreMap();
+        return stageScoreMap.values().stream().reduce(0, Integer::sum);
     }
 
     @Override
@@ -86,7 +130,7 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
-        int i = 0;
+
         for (Option option : options) {
             sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y);
             sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y);
@@ -99,24 +143,46 @@ public class PlayState extends State {
             font.draw(sb, question.getAnswers().get(1), option.getPosBotTube().x, option.getPosBotTube().y);
         }
 
-        sb.draw(ground, groundPos1.x, groundPos1.y);
-        sb.draw(ground, groundPos2.x, groundPos2.y);
+        sb.end();
+        sb.setProjectionMatrix(guiCam.combined);
+        sb.begin();
+        if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
+            setStageOpacity(font, System.currentTimeMillis() - timeSinceStart);
+            GlyphLayout stageLayout = new GlyphLayout();
+            stageLayout.setText(font, "STAGE" + stage);
+            float width = stageLayout.width;
+            float height = stageLayout.height;
+            font.getData().setScale(4, 4);
+            font.draw(sb, "STAGE " + stage, gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
+            font.setColor(1, 1, 1, 1);
+        }
+        font.getData().setScale(1, 1);
+
+        //TODO: center scores, position texts
+        font.draw(sb, "SCORE:" + score, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
+        font.draw(sb, "YOUR BEST:" + currentProfile.getStageScoreMap().get(stage), Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 70);
         sb.end();
     }
+
+
+    private void setStageOpacity(BitmapFont font, long timeDifference) {
+        long stageInfoTimeMax = 1000 * stageInfoTimeSeconds;
+        float opacityChange = 2f / stageInfoTimeMax;
+        if (timeDifference < (stageInfoTimeMax / 2)) {
+            font.setColor(1, 1, 1, 1);
+        } else {
+            float opacity = 1f - ((timeDifference - stageInfoTimeMax / 2) * opacityChange);
+            font.setColor(1, 1, 1, opacity);
+        }
+    }
+
+
 
     @Override
     public void dispose() {
         player.dispose();
-        ground.dispose();
-        for (Option tube : options)
-            tube.dispose();
+        for (Option option : options)
+            option.dispose();
         font.dispose();
-    }
-
-    private void updateGround(){
-        if(cam.position.x - (cam.viewportWidth / 2) > groundPos1.x + ground.getWidth())
-            groundPos1.add(ground.getWidth() * 2, 0);
-        if(cam.position.x - (cam.viewportWidth / 2) > groundPos2.x + ground.getWidth())
-            groundPos2.add(ground.getWidth() * 2, 0);
     }
 }
