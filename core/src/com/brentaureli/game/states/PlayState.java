@@ -40,6 +40,8 @@ public class PlayState extends State {
     private int stageInfoTimeSeconds = 5;
     private double timeForQuestion;
     private double timeBetweenQuestions;
+    private double maxY;
+    private float gameSpeed1s = velocity * 2.3f;
 
     private int stage;
 
@@ -55,7 +57,7 @@ public class PlayState extends State {
 
         currentProfile = ProfileManager.getInstance().getCurrentProfile();
         timeForQuestion = currentProfile.getTimeForQuestion();
-        timeBetweenQuestions = timeForQuestion / 2;
+        timeBetweenQuestions = timeForQuestion / 4;
 
         questionsForStage = questionManager.prepareQuestionsForStage(stage);
 
@@ -67,9 +69,9 @@ public class PlayState extends State {
     private List<Option> setGameDifficulty() {
         options = new ArrayList<>();
         for (int i = 0; i < OPTIONS_AMOUNT; i++) {
-            float gameSpeed1s = velocity * 2.2f;
             options.add(new Option((float) (gameSpeed1s * (stageInfoTimeSeconds + (i + 1) * (timeForQuestion) + timeBetweenQuestions * i)), questionsForStage.get(i)));
         }
+        maxY = gameSpeed1s * (stageInfoTimeSeconds + 10 * (timeForQuestion) + timeBetweenQuestions * 10);
         return options;
     }
 
@@ -85,7 +87,11 @@ public class PlayState extends State {
     }
 
     private void updateScore() {
-        score += 1;
+        score += stage * calculateMultiplier();
+    }
+
+    private int calculateMultiplier() {
+        return (int) Math.round(100 / (Math.pow(timeForQuestion, 2)));
     }
 
     @Override
@@ -101,7 +107,7 @@ public class PlayState extends State {
             if (tube.getPosTopTube().y - player.getPosition().y < 5) {
                 updateScore();
             }
-            if (tube.collides(player.getBounds())) {
+            if (tube.collides(player.getBounds()) || player.getPosition().y > maxY) {
                 gsm.set(new EndGameState(gsm, score, checkPlayerHighScore(score)));
             }
         }
@@ -125,6 +131,18 @@ public class PlayState extends State {
         return stageScoreMap.values().stream().reduce(0, Integer::sum);
     }
 
+    private void renderQuestionWithAnswers(BitmapFont font, SpriteBatch sb, Question question) {
+        GlyphLayout glyphLayout = new GlyphLayout();
+        glyphLayout.setText(font, question.getQuestion());
+        float width = glyphLayout.width;
+        float height = glyphLayout.height;
+        font.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
+        glyphLayout.setText(font, question.getQuestion());
+        font.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+        glyphLayout.setText(font, question.getQuestion());
+        font.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+    }
+
     @Override
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
@@ -132,22 +150,15 @@ public class PlayState extends State {
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
         for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y);
-            Question question = option.getQuestion();
-            GlyphLayout glyphLayout = new GlyphLayout();
-            glyphLayout.setText(font, question.getQuestion());
-            float w = glyphLayout.width;
-            font.draw(sb, glyphLayout, (500 - w) / 2, option.getPosTopTube().y - 200);
-            font.draw(sb, question.getAnswers().get(0), option.getPosTopTube().x, option.getPosTopTube().y);
-            font.draw(sb, question.getAnswers().get(1), option.getPosBotTube().x, option.getPosBotTube().y);
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 1);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 1);
         }
 
         sb.end();
         sb.setProjectionMatrix(guiCam.combined);
         sb.begin();
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
-            setStageOpacity(font, System.currentTimeMillis() - timeSinceStart);
+            setStageTextOpacity(font, System.currentTimeMillis() - timeSinceStart);
             GlyphLayout stageLayout = new GlyphLayout();
             stageLayout.setText(font, "STAGE" + stage);
             float width = stageLayout.width;
@@ -156,8 +167,24 @@ public class PlayState extends State {
             font.draw(sb, "STAGE " + stage, gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
             font.setColor(1, 1, 1, 1);
         }
-        font.getData().setScale(1, 1);
+        font.getData().setScale(2, 2);
+        if (currentQuestion == 0) {
+            if (player.getPosition().y > gameSpeed1s * stageInfoTimeSeconds && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
+                renderQuestionWithAnswers(font, sb, options.get(currentQuestion).getQuestion());
+            } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
+                currentQuestion++;
+            }
+        } else {
+            if (currentQuestion < OPTIONS_AMOUNT) {
+                if (player.getPosition().y > (options.get(currentQuestion - 1).getPosTopTube().y + timeBetweenQuestions * gameSpeed1s) && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
+                    renderQuestionWithAnswers(font, sb, options.get(currentQuestion).getQuestion());
+                } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
+                    currentQuestion++;
+                }
+            }
+        }
 
+        font.getData().setScale(1, 1);
         //TODO: center scores, position texts
         font.draw(sb, "SCORE:" + score, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
         font.draw(sb, "YOUR BEST:" + currentProfile.getStageScoreMap().get(stage), Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 70);
@@ -165,7 +192,7 @@ public class PlayState extends State {
     }
 
 
-    private void setStageOpacity(BitmapFont font, long timeDifference) {
+    private void setStageTextOpacity(BitmapFont font, long timeDifference) {
         long stageInfoTimeMax = 1000 * stageInfoTimeSeconds;
         float opacityChange = 2f / stageInfoTimeMax;
         if (timeDifference < (stageInfoTimeMax / 2)) {

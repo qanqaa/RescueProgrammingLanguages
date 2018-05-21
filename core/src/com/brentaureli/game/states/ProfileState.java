@@ -50,7 +50,6 @@ public class ProfileState extends State {
         GlyphLayout layout = new GlyphLayout();
         layout.setText(font, "CURRENT PROFILE");
         sb.begin();
-//        font.getData().setScale(2, 2);
         font.draw(sb, "CURRENT PROFILE", (gameWidth / 2) - (layout.width / 2), gameHeight - 50);
         font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 150);
         font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 200);

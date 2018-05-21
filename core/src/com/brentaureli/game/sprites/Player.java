@@ -1,5 +1,6 @@
 package com.brentaureli.game.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -49,10 +50,14 @@ public class Player {
     }
 
     public void moveLeft(){
-        MOVEMENT = -10;
+        if (position.x > 0) {
+            MOVEMENT = -10;
+        }
     }
     public void moveRight(){
-        MOVEMENT = 10;
+        if (position.x + bounds.width < Gdx.graphics.getWidth() / 2) {
+            MOVEMENT = 10;
+        }
     }
 
     public Rectangle getBounds(){
