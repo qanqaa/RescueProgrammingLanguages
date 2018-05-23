@@ -3,10 +3,12 @@ package com.brentaureli.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.ProfileManager;
 
 import java.awt.*;
@@ -16,25 +18,46 @@ public class StageState extends State {
 
     private int gameHeight = Gdx.graphics.getHeight();
     private int gameWidth = Gdx.graphics.getWidth();
-    private int stageTableStartingWidth = gameWidth / 16;
-    private int stageTableHeight = gameHeight - 100;
     BitmapFont font = new BitmapFont();
 
-    public static final int STAGE_WIDTH = 120;
-    public static final int STAGE_HEIGHT = 60;
+    private Texture background;
+    private Texture stage1bg;
+    private Texture stage2bg;
+    private Texture stage3bg;
+    private Texture playerScore;
 
-    private int stage1PositionX = stageTableStartingWidth;
-    private int stage2PositionX = stage1PositionX + STAGE_WIDTH + 30;
-    private int stage3PositionX = stage2PositionX + STAGE_WIDTH + 30;
-    //
-//    //dla getX() / getY()
+    private static final int ALL_BUTTONS_WIDTH = 300;
+    private static final int ALL_BUTTONS_HEIGHT = 80;
+
+    // dla funkcji draw()
+    private static final int STAGE1_BUTTON_Y = 540;
+    private static final int STAGE2_BUTTON_Y = 420;
+    private static final int STAGE3_BUTTON_Y = 300;
+    private static final int PLAYER_SCORE_BUTTON_Y = 150;
+
+    // POŁOŻENIE BUTTONÓW
+
+    private int ALL_BUTTONS_X = QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2;
+
     //TODO: AWT working on Android? And why is this awt
-    private Rectangle stage1 = new Rectangle(stage1PositionX, gameHeight - stageTableHeight, STAGE_WIDTH, STAGE_HEIGHT);
-    private Rectangle stage2 = new Rectangle(stage2PositionX, gameHeight - stageTableHeight, STAGE_WIDTH, STAGE_HEIGHT);
-    private Rectangle stage3 = new Rectangle(stage3PositionX, gameHeight - stageTableHeight, STAGE_WIDTH, STAGE_HEIGHT);
+//dla getX() / getY()
+    private static final int stage1_y = QuizGame.HEIGHT - STAGE1_BUTTON_Y - ALL_BUTTONS_HEIGHT;
+    private static final int stage2_y = QuizGame.HEIGHT - STAGE2_BUTTON_Y - ALL_BUTTONS_HEIGHT;
+    private static final int stage3_y = QuizGame.HEIGHT - STAGE3_BUTTON_Y - ALL_BUTTONS_HEIGHT;
+
+
+    private Rectangle stage1 = new Rectangle(ALL_BUTTONS_X, stage1_y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+    private Rectangle stage2 = new Rectangle(ALL_BUTTONS_X, stage2_y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+    private Rectangle stage3 = new Rectangle(ALL_BUTTONS_X, stage3_y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+
 
     public StageState(GameStateManager gsm) {
         super(gsm);
+        background = new Texture("stagesbg.png");
+        stage1bg = new Texture("stage1.png");
+        stage2bg = new Texture("stage2.png");
+        stage3bg = new Texture("stage3.png");
+        playerScore = new Texture("playerscore.png");
     }
 
     @Override
@@ -71,30 +94,25 @@ public class StageState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
+
         Map<Integer, Integer> stageScoreMap = ProfileManager.getInstance().getCurrentProfile().getStageScoreMap();
         int score1 = stageScoreMap.get(1);
         int score2 = stageScoreMap.get(2);
         int score3 = stageScoreMap.get(3);
         int sum = score1 + score2 + score3;
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(stage1PositionX, stageTableHeight - STAGE_HEIGHT, STAGE_WIDTH, STAGE_HEIGHT);
-        shapeRenderer.rect(stage2PositionX, stageTableHeight - STAGE_HEIGHT, STAGE_WIDTH, STAGE_HEIGHT);
-        shapeRenderer.rect(stage3PositionX, stageTableHeight - STAGE_HEIGHT, STAGE_WIDTH, STAGE_HEIGHT);
-        shapeRenderer.end();
         sb.begin();
         font.getData().setScale(1, 1);
-        font.draw(sb, "STAGES", gameWidth / 2, gameHeight - 50);
-        font.draw(sb, "STAGE 1", stage1PositionX + (STAGE_WIDTH / 2) - 60, stageTableHeight - (STAGE_HEIGHT / 2) + 10);
-        font.draw(sb, "SCORE: " + score1, stage1PositionX, stageTableHeight - STAGE_HEIGHT);
-        font.draw(sb, "STAGE 2", stage2PositionX + (STAGE_WIDTH / 2) - 60, stageTableHeight - (STAGE_HEIGHT / 2) + 10);
-        font.draw(sb, "SCORE: " + score2, stage2PositionX, stageTableHeight - STAGE_HEIGHT);
-        font.draw(sb, "STAGE 3", stage3PositionX + (STAGE_WIDTH / 2) - 60, stageTableHeight - (STAGE_HEIGHT / 2) + 10);
-        font.draw(sb, "SCORE: " + score3, stage3PositionX, stageTableHeight - STAGE_HEIGHT);
-        font.draw(sb, "OVERALL PLAYER SCORE", gameWidth / 2 , 200);
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        sb.draw(stage1bg, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2,  STAGE1_BUTTON_Y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+        sb.draw(stage2bg, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2, STAGE2_BUTTON_Y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+        sb.draw(stage3bg, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2, STAGE3_BUTTON_Y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+        sb.draw(playerScore, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2, PLAYER_SCORE_BUTTON_Y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+        font.draw(sb, "SCORE: " + score1, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 5,STAGE1_BUTTON_Y-10);
+        font.draw(sb, "SCORE: " + score2, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 5,STAGE2_BUTTON_Y-10);
+        font.draw(sb, "SCORE: " + score3, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 5,STAGE3_BUTTON_Y-10);
         font.draw(sb, String.valueOf(sum), gameWidth / 2, 100);
         sb.end();
+
     }
 
     @Override

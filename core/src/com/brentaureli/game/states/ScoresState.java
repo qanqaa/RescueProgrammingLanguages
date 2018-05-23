@@ -2,6 +2,7 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,10 +16,12 @@ public class ScoresState extends State {
 
     private List<PlayerScore> playerScoreList;
     private BitmapFont font;
+    private Texture background;
 
     public ScoresState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
+        background = new Texture(Gdx.files.internal("highscoresbg.png"));
         //TODO: IMPLEMENT DATABASE HIGHSCORES
         //playerScoreList = PlayerScoreManager.getTop10HighScores();
         playerScoreList = PlayerScoreManagerMock.getInstance().prepare20Players();
@@ -50,16 +53,13 @@ public class ScoresState extends State {
         GlyphLayout layout = new GlyphLayout();
         layout.setText(font, "HIGH SCORES");
         sb.begin();
-
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         int nameWidth = width / 6;
         int scoreWidth = 2 * width / 3;
         //TODO: profile photos?
         // int photoWidth = width/7;
 
         font.getData().setScale(2, 2);
-        font.draw(sb, "HIGH SCORES", (width / 2) - (layout.width / 2), height - 50);
-        font.draw(sb, "NAME", nameWidth, height - 150);
-        font.draw(sb, "SCORE", scoreWidth, height - 150);
 
         height -= 200;
         for (PlayerScore playerScore : playerScoreList) {
