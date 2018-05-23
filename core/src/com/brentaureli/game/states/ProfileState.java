@@ -2,12 +2,14 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
@@ -20,10 +22,12 @@ public class ProfileState extends State {
     private String questionsTimeFieldtext = String.valueOf(ProfileManager.getInstance().getCurrentProfile().getTimeForQuestion());
     private TextField nameField = new TextField(nameText, skin);
     private TextField questionsTimeField = new TextField(questionsTimeFieldtext, skin);
+    private Texture background;
     Stage stage = new Stage();
     public ProfileState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
+        background = new Texture(Gdx.files.internal("profilebg.png"));
 
 
     }
@@ -50,13 +54,13 @@ public class ProfileState extends State {
         GlyphLayout layout = new GlyphLayout();
         layout.setText(font, "CURRENT PROFILE");
         sb.begin();
-        font.draw(sb, "CURRENT PROFILE", (gameWidth / 2) - (layout.width / 2), gameHeight - 50);
-        font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 150);
-        font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 200);
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 550);
+        font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 600);
         sb.end();
-        nameField.setPosition(gameWidth / 2, gameHeight - 180);
+        nameField.setPosition(gameWidth / 2, gameHeight - 580);
         nameField.setSize(150, 40);
-        questionsTimeField.setPosition(gameWidth / 2, gameHeight - 230);
+        questionsTimeField.setPosition(gameWidth / 2, gameHeight - 630);
         questionsTimeField.setSize(50, 40);
         stage.addActor(nameField);
         stage.addActor(questionsTimeField);
