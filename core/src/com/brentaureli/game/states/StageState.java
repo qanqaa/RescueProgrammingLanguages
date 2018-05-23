@@ -16,24 +16,16 @@ public class StageState extends State {
 
     private int gameHeight = Gdx.graphics.getHeight();
     private int gameWidth = Gdx.graphics.getWidth();
-    private int stageTableStartingWidth = gameWidth / 6;
+    private int stageTableStartingWidth = gameWidth / 16;
     private int stageTableHeight = gameHeight - 100;
     BitmapFont font = new BitmapFont();
-    //    // deklaracja wielkości buttonów
-    public static final int STAGE_WIDTH = 200;
-    public static final int STAGE_HEIGHT = 80;
 
-    //    // dla funkcji draw()
-    public static final int START_BUTTON_Y = 450;
-    public static final int PROFILE_BUTTON_Y = 350;
-    public static final int SCORES_BUTTON_Y = 250;
-    public static final int EXIT_BUTTON_Y = 150;
-    //
-//    // POŁOŻENIE BUTTONÓW
-//
+    public static final int STAGE_WIDTH = 120;
+    public static final int STAGE_HEIGHT = 60;
+
     private int stage1PositionX = stageTableStartingWidth;
-    private int stage2PositionX = stage1PositionX + STAGE_WIDTH + 50;
-    private int stage3PositionX = stage2PositionX + STAGE_WIDTH + 50;
+    private int stage2PositionX = stage1PositionX + STAGE_WIDTH + 30;
+    private int stage3PositionX = stage2PositionX + STAGE_WIDTH + 30;
     //
 //    //dla getX() / getY()
     //TODO: AWT working on Android? And why is this awt
@@ -92,7 +84,7 @@ public class StageState extends State {
         shapeRenderer.rect(stage3PositionX, stageTableHeight - STAGE_HEIGHT, STAGE_WIDTH, STAGE_HEIGHT);
         shapeRenderer.end();
         sb.begin();
-        font.getData().setScale(2, 2);
+        font.getData().setScale(1, 1);
         font.draw(sb, "STAGES", gameWidth / 2, gameHeight - 50);
         font.draw(sb, "STAGE 1", stage1PositionX + (STAGE_WIDTH / 2) - 60, stageTableHeight - (STAGE_HEIGHT / 2) + 10);
         font.draw(sb, "SCORE: " + score1, stage1PositionX, stageTableHeight - STAGE_HEIGHT);
@@ -100,7 +92,7 @@ public class StageState extends State {
         font.draw(sb, "SCORE: " + score2, stage2PositionX, stageTableHeight - STAGE_HEIGHT);
         font.draw(sb, "STAGE 3", stage3PositionX + (STAGE_WIDTH / 2) - 60, stageTableHeight - (STAGE_HEIGHT / 2) + 10);
         font.draw(sb, "SCORE: " + score3, stage3PositionX, stageTableHeight - STAGE_HEIGHT);
-        font.draw(sb, "OVERALL PLAYER SCORE", gameWidth / 2 - 200, 200);
+        font.draw(sb, "OVERALL PLAYER SCORE", gameWidth / 2 , 200);
         font.draw(sb, String.valueOf(sum), gameWidth / 2, 100);
         sb.end();
     }

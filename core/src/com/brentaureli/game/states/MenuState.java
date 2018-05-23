@@ -13,20 +13,20 @@ public class MenuState extends State{
 
     ProfileManager profileManager = ProfileManager.getInstance();
     // deklaracja wielkości buttonów
-    private static final int START_BUTTON_WIDTH = 150;
+    private static final int START_BUTTON_WIDTH = 300;
     private static final int START_BUTTON_HEIGHT = 80;
-    private static final int PROFILE_BUTTON_WIDTH = 150;
+    private static final int PROFILE_BUTTON_WIDTH = 300;
     private static final int PROFILE_BUTTON_HEIGHT = 80;
-    private static final int SCORES_BUTTON_WIDTH = 150;
+    private static final int SCORES_BUTTON_WIDTH = 300;
     private static final int SCORES_BUTTON_HEIGHT = 80;
-    private static final int EXIT_BUTTON_WIDTH = 150;
+    private static final int EXIT_BUTTON_WIDTH = 300;
     private static final int EXIT_BUTTON_HEIGHT = 80;
 
     // dla funkcji draw()
-    private static final int START_BUTTON_Y = 450;
-    private static final int PROFILE_BUTTON_Y = 350;
-    private static final int SCORES_BUTTON_Y = 250;
-    private static final int EXIT_BUTTON_Y = 150;
+    private static final int START_BUTTON_Y = 380;
+    private static final int PROFILE_BUTTON_Y = 280;
+    private static final int SCORES_BUTTON_Y = 180;
+    private static final int EXIT_BUTTON_Y = 80;
 
     // POŁOŻENIE BUTTONÓW
 
@@ -57,8 +57,8 @@ public class MenuState extends State{
         super(gsm);
 
 //        cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
-//        background = new Texture("bg.png");
-        playBtn = new Texture(Gdx.files.internal("startbutton.png"));
+        background = new Texture("bg.png");
+        playBtn = new Texture(Gdx.files.internal("playbutton.png"));
         exitBtn = new Texture(Gdx.files.internal("exitbutton.png"));
         profileBtn = new Texture(Gdx.files.internal("profilebutton.png"));
         scoresBtn = new Texture(Gdx.files.internal("scoresbutton.png"));
@@ -110,8 +110,8 @@ public class MenuState extends State{
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-//        sb.draw(background, 0,0);
-        sb.draw(playBtn, QuizGame.WIDTH / 2 - START_BUTTON_WIDTH / 2, START_BUTTON_Y, START_BUTTON_WIDTH, START_BUTTON_HEIGHT);
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        sb.draw(playBtn, QuizGame.WIDTH / 2 - START_BUTTON_WIDTH / 2,  START_BUTTON_Y, START_BUTTON_WIDTH, START_BUTTON_HEIGHT);
         sb.draw(profileBtn, QuizGame.WIDTH / 2 - PROFILE_BUTTON_WIDTH / 2, PROFILE_BUTTON_Y, PROFILE_BUTTON_WIDTH, PROFILE_BUTTON_HEIGHT);
         sb.draw(scoresBtn, QuizGame.WIDTH / 2 - SCORES_BUTTON_WIDTH / 2, SCORES_BUTTON_Y, SCORES_BUTTON_WIDTH, SCORES_BUTTON_HEIGHT);
         sb.draw(exitBtn, QuizGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
