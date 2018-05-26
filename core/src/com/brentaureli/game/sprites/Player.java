@@ -55,7 +55,7 @@ public class Player {
         }
     }
     public void moveRight(){
-        if (position.x + bounds.width < Gdx.graphics.getWidth() / 2) {
+        if (position.x + bounds.width < Gdx.graphics.getWidth()) {
             MOVEMENT = 10;
         }
     }

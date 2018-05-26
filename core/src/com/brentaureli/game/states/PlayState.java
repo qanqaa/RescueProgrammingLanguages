@@ -53,7 +53,7 @@ public class PlayState extends State {
         guiCam = new OrthographicCamera();
         guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         player = new Player(50, 300);
-        cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
+        cam.setToOrtho(false, QuizGame.WIDTH, QuizGame.HEIGHT / 2);
 
         currentProfile = ProfileManager.getInstance().getCurrentProfile();
         timeForQuestion = currentProfile.getTimeForQuestion();

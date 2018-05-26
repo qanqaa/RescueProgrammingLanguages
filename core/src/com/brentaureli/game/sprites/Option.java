@@ -1,5 +1,6 @@
 package com.brentaureli.game.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,12 +20,12 @@ public class Option {
 
 
         posTopTube = new Vector2(0, y);
-        posBotTube = new Vector2(250, y);
+        posBotTube = new Vector2(Gdx.graphics.getWidth() / 2, y);
 
         if (question.getCorrectAnswer() == 2) {
             topTube = new Texture("tube2.png");
-            boundsTop = new Rectangle(posTopTube.x, posTopTube.y, 250, 1);
-            boundsBot = new Rectangle(posTopTube.x, posTopTube.y, 250, 1);
+            boundsTop = new Rectangle(posTopTube.x, posTopTube.y, Gdx.graphics.getWidth() / 2, 1);
+            boundsBot = new Rectangle(posTopTube.x, posTopTube.y, Gdx.graphics.getWidth() / 2, 1);
         }
         else{
             bottomTube = new Texture("tube2.png");
