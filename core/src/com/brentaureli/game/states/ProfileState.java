@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
@@ -72,5 +71,6 @@ public class ProfileState extends State {
     @Override
     public void dispose() {
         font.dispose();
+        background.dispose();
     }
 }

@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * Created by Brent on 7/5/2015.
- */
 public class Player {
     private int MOVEMENT = 0;
     private Vector3 position;

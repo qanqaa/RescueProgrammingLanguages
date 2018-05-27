@@ -92,5 +92,6 @@ public class ScoresState extends State {
         font.dispose();
         photo.dispose();
         defaultPhoto.dispose();
+        background.dispose();
     }
 }

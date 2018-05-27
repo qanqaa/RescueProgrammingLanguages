@@ -2,11 +2,9 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.ProfileManager;
@@ -62,20 +60,11 @@ public class StageState extends State {
 
     @Override
     public void handleInput() {
-
-        // można wykorzystać do zmiany koloru napisu po najechaniu na niego myszką HOVER
-//        if(Gdx.input.getX() < start_x + START_BUTTON_WIDTH && Gdx.input.getX() > start_x && QuizGame.HEIGHT - Gdx.input.getY() < START_BUTTON_Y + START_BUTTON_HEIGHT && QuizGame.HEIGHT - Gdx.input.getY() > START_BUTTON_Y) {
-//            // wczytaj nową teksturę
-//        }
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             gsm.set(new MenuState(gsm));
         }
         if (Gdx.input.isTouched()) {
             Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            // texture x is the x position of the texture
-//            // texture y is the y position of the texture
-//            // texturewidth is the width of the texture (you can get it with texture.getWidth() or textureRegion.getRegionWidth() if you have a texture region
-//            // textureheight is the height of the texture (you can get it with texture.getHeight() or textureRegion.getRegionhHeight() if you have a texture region
             if (stage1.contains(tmp.x, tmp.y)) {
                 gsm.set(new PlayState(gsm, 1));
             } else if (stage2.contains(tmp.x, tmp.y)) {
@@ -118,6 +107,11 @@ public class StageState extends State {
     @Override
     public void dispose() {
         font.dispose();
+        background.dispose();
+        stage1bg.dispose();
+        stage2bg.dispose();
+        stage3bg.dispose();
+        playerScore.dispose();
 
     }
 }

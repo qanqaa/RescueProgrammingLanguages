@@ -56,7 +56,6 @@ public class MenuState extends State{
         //TODO: LOAD PROFILE FROM MEMORY/CACHE/DATABASE?
         super(gsm);
 
-//        cam.setToOrtho(false, QuizGame.WIDTH / 2, QuizGame.HEIGHT / 2);
         background = new Texture("bg.png");
         playBtn = new Texture(Gdx.files.internal("playbutton.png"));
         exitBtn = new Texture(Gdx.files.internal("exitbutton.png"));
@@ -75,12 +74,7 @@ public class MenuState extends State{
         if(Gdx.input.isTouched())
         {
             Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
-            // texture x is the x position of the texture
-            // texture y is the y position of the texture
-            // texturewidth is the width of the texture (you can get it with texture.getWidth() or textureRegion.getRegionWidth() if you have a texture region
-            // textureheight is the height of the texture (you can get it with texture.getHeight() or textureRegion.getRegionhHeight() if you have a texture region
-            Gdx.app.log("x:", String.valueOf(tmp.x));
-            Gdx.app.log("y:", String.valueOf(tmp.y));
+
             if(start.contains(tmp.x,tmp.y))
             {
                 gsm.set(new StageState(gsm));
@@ -120,11 +114,10 @@ public class MenuState extends State{
 
     @Override
     public void dispose() {
-//        background.dispose();
+        background.dispose();
         playBtn.dispose();
-//        exitBtn.dispose();
-//        profileBtn.dispose();
-//        scoresBtn.dispose();
-        System.out.println("Menu State Disposed");
+        exitBtn.dispose();
+        profileBtn.dispose();
+        scoresBtn.dispose();
     }
 }
