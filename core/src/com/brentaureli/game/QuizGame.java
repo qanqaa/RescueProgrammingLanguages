@@ -3,7 +3,9 @@ package com.brentaureli.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.brentaureli.game.states.GameStateManager;
 import com.brentaureli.game.states.MenuState;
 
@@ -22,6 +24,8 @@ public class QuizGame extends ApplicationAdapter {
         gsm = new GameStateManager();
         Gdx.gl.glClearColor(0, 0, 1, 1);
         gsm.push(new MenuState(gsm));
+
+
 	}
 
 	@Override

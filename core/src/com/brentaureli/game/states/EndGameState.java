@@ -2,6 +2,7 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,12 +17,13 @@ public class EndGameState extends State {
     private int score;
     private boolean newRecord;
     private BitmapFont font = new BitmapFont();
-    private String endGameText = "END GAME";
     private String yourScoreText;
     private String newHighScoreText = "NEW HIGH SCORE!";
+    private Texture background;
 
     public EndGameState(GameStateManager gsm, int score, boolean newRecord) {
         super(gsm);
+        background = new Texture("endgamebg.png");
         this.score = score;
         this.newRecord = newRecord;
         this.yourScoreText = " YOUR SCORE: " + score;
@@ -45,10 +47,9 @@ public class EndGameState extends State {
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         font.getData().setScale(2, 2);
         GlyphLayout glyphLayout = new GlyphLayout();
-        glyphLayout.setText(font, endGameText);
-        font.draw(sb, endGameText, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 + 20);
         glyphLayout.setText(font, yourScoreText);
         font.draw(sb, yourScoreText, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 - 20);
         if (newRecord) {
