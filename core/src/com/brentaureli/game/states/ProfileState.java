@@ -22,6 +22,11 @@ public class ProfileState extends State {
     private TextField nameField = new TextField(nameText, skin);
     private TextField questionsTimeField = new TextField(questionsTimeFieldtext, skin);
     private Texture background;
+    private Texture photo;
+    private String photoPath = "photos/";
+    private final static int PHOTO_WIDTH = 300;
+    private final static int PHOTO_HEIGHT = 300;
+
     Stage stage = new Stage();
     public ProfileState(GameStateManager gsm) {
         super(gsm);
@@ -54,6 +59,14 @@ public class ProfileState extends State {
         layout.setText(font, "CURRENT PROFILE");
         sb.begin();
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        String photoName = ProfileManager.getInstance().getCurrentProfile().getPhoto();
+        //TODO: Add PhotoManager to get profile's photo or default photo
+        if (photoName != null) {
+            photo = new Texture(Gdx.files.internal(photoPath + photoName));
+        } else {
+            photo = new Texture(Gdx.files.internal(photoPath + "defaultPhoto.png"));
+        }
+        sb.draw(photo, gameWidth / 2 - PHOTO_WIDTH / 2, gameHeight / 2 - PHOTO_HEIGHT / 4, PHOTO_WIDTH, PHOTO_HEIGHT);
         font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 550);
         font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 600);
         sb.end();

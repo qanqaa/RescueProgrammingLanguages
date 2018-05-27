@@ -62,7 +62,6 @@ public class ScoresState extends State {
         int nameWidth = width / 6;
         int scoreWidth = 2 * width / 3;
         int photoWidth = nameWidth - 50;
-        //TODO: profile photos?
 
         font.getData().setScale(2, 2);
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
@@ -70,6 +69,7 @@ public class ScoresState extends State {
         parameter.size = 40;
         BitmapFont font12 = generator.generateFont(parameter);
         height -= 200;
+        //TODO: photo Manager
         for (PlayerScore playerScore : playerScoreList) {
             if (playerScore.getProfile().getPhoto() != null) {
                 photo = new Texture(Gdx.files.internal(photosFolder + playerScore.getProfile().getPhoto()));
@@ -80,7 +80,6 @@ public class ScoresState extends State {
             font12.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
             font12.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
             sb.draw(photo, photoWidth, height - 30, 30, 30);
-            //TODO: render photos for each score?
         }
         sb.end();
         generator.dispose();
