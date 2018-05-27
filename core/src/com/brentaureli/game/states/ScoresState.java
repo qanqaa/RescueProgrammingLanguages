@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.brentaureli.game.scores.PlayerScore;
 import com.brentaureli.game.scores.PlayerScoreManagerMock;
 
@@ -17,6 +18,9 @@ public class ScoresState extends State {
     private List<PlayerScore> playerScoreList;
     private BitmapFont font;
     private Texture background;
+    private Texture defaultPhoto;
+    private Texture photo;
+    private String photosFolder = "photos/";
 
     public ScoresState(GameStateManager gsm) {
         super(gsm);
@@ -28,6 +32,7 @@ public class ScoresState extends State {
         if (playerScoreList.size() > 10) {
             playerScoreList.subList(10, playerScoreList.size()).clear();
         }
+        defaultPhoto = new Texture(Gdx.files.internal(photosFolder + "defaultPhoto.png"));
 
     }
 
@@ -56,23 +61,36 @@ public class ScoresState extends State {
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         int nameWidth = width / 6;
         int scoreWidth = 2 * width / 3;
+        int photoWidth = nameWidth - 50;
         //TODO: profile photos?
-        // int photoWidth = width/7;
 
         font.getData().setScale(2, 2);
-
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 40;
+        BitmapFont font12 = generator.generateFont(parameter);
         height -= 200;
         for (PlayerScore playerScore : playerScoreList) {
-            height -= 40;
-            font.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
-            font.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
+            if (playerScore.getProfile().getPhoto() != null) {
+                photo = new Texture(Gdx.files.internal(photosFolder + playerScore.getProfile().getPhoto()));
+            } else {
+                photo = defaultPhoto;
+            }
+            height -= 50;
+            font12.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
+            font12.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
+            sb.draw(photo, photoWidth, height - 30, 30, 30);
             //TODO: render photos for each score?
         }
         sb.end();
+        generator.dispose();
+        font12.dispose();
     }
 
     @Override
     public void dispose() {
         font.dispose();
+        photo.dispose();
+        defaultPhoto.dispose();
     }
 }

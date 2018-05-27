@@ -21,7 +21,7 @@ public class PlayerScoreManagerMock {
 
     public List<PlayerScore> prepare10Players() {
         playerScores.add(new PlayerScore(new Profile("2131"), 10));
-        playerScores.add(new PlayerScore(new Profile("2231"), 20));
+        playerScores.add(new PlayerScore(new Profile("2231", "photo2.png"), 20));
         playerScores.add(new PlayerScore(new Profile("2434241"), 30));
         playerScores.add(new PlayerScore(new Profile("223131"), 40));
         playerScores.add(new PlayerScore(new Profile("21321311"), 50));
@@ -41,7 +41,7 @@ public class PlayerScoreManagerMock {
         playerScores.add(new PlayerScore(new Profile("2434241"), 30));
         playerScores.add(new PlayerScore(new Profile("223131"), 40));
         playerScores.add(new PlayerScore(new Profile("21321311"), 50));
-        playerScores.add(new PlayerScore(new Profile("21adada"), 60));
+        playerScores.add(new PlayerScore(new Profile("21adada", "photo2.png"), 60));
         playerScores.add(new PlayerScore(new Profile("2asdada1"), 70));
         playerScores.add(new PlayerScore(new Profile("2asdzxcz131"), 80));
         playerScores.add(new PlayerScore(new Profile("2daf131"), 90));
@@ -55,7 +55,7 @@ public class PlayerScoreManagerMock {
         playerScores.add(new PlayerScore(new Profile("2asdada1"), 31));
         playerScores.add(new PlayerScore(new Profile("2asdzxcz131"), 88));
         playerScores.add(new PlayerScore(new Profile("2daf131"), 99));
-        playerScores.add(new PlayerScore(new Profile("vxcvxv2131"), 1110));
+        playerScores.add(new PlayerScore(new Profile("vxcvxv2131", "photo2.png"), 1110));
         sortDescending();
         return playerScores;
     }

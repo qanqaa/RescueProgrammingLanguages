@@ -1,13 +1,12 @@
 package com.brentaureli.game.profiles;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Profile {
 
     private String name;
-    private File photo;
+    private String photo;
     private Map<Integer, Integer> stageScoreMap = new HashMap<>();
     private double timeForQuestion = 5;
 
@@ -25,7 +24,7 @@ public class Profile {
         initializeStageScores();
     }
 
-    public Profile(String name, File photo) {
+    public Profile(String name, String photo) {
         this.name = name;
         this.photo = photo;
         initializeStageScores();
@@ -37,7 +36,7 @@ public class Profile {
         initializeStageScores();
     }
 
-    public Profile(String name, File photo, double timeForQuestion) {
+    public Profile(String name, String photo, double timeForQuestion) {
         this.name = name;
         this.photo = photo;
         this.timeForQuestion = timeForQuestion;
@@ -52,11 +51,11 @@ public class Profile {
         this.name = name;
     }
 
-    public File getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(File photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
