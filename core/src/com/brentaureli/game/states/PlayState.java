@@ -3,6 +3,7 @@ package com.brentaureli.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,12 +43,13 @@ public class PlayState extends State {
     private double timeBetweenQuestions;
     private double maxY;
     private float gameSpeed1s = velocity * 2.3f;
-
+    private Texture background;
     private int stage;
 
 
     public PlayState(GameStateManager gsm, int stage) {
         super(gsm);
+        background = new Texture(Gdx.files.internal("playstatebg.png"));
         this.stage = stage;
         timeSinceStart = System.currentTimeMillis();
         guiCam = new OrthographicCamera();
@@ -145,18 +147,10 @@ public class PlayState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
-        sb.begin();
-        sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
-        for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 1);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 1);
-        }
-
-        sb.end();
         sb.setProjectionMatrix(guiCam.combined);
         sb.begin();
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
             setStageTextOpacity(font, System.currentTimeMillis() - timeSinceStart);
             GlyphLayout stageLayout = new GlyphLayout();
@@ -188,6 +182,17 @@ public class PlayState extends State {
         //TODO: center scores, position texts
         font.draw(sb, "SCORE:" + score, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
         font.draw(sb, "YOUR BEST:" + currentProfile.getStageScoreMap().get(stage), Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 70);
+        sb.end();
+
+        sb.setProjectionMatrix(cam.combined);
+        sb.begin();
+        sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
+
+        for (Option option : options) {
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 1);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 1);
+        }
+
         sb.end();
     }
 
