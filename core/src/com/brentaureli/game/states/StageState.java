@@ -5,11 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.ProfileManager;
 
-import java.awt.*;
 import java.util.Map;
 
 public class StageState extends State {

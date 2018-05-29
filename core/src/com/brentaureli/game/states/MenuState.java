@@ -3,11 +3,11 @@ package com.brentaureli.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.ProfileManager;
 
-import java.awt.*;
 
 public class MenuState extends State{
 
@@ -70,11 +70,10 @@ public class MenuState extends State{
 //        if(Gdx.input.getX() < start_x + START_BUTTON_WIDTH && Gdx.input.getX() > start_x && QuizGame.HEIGHT - Gdx.input.getY() < START_BUTTON_Y + START_BUTTON_HEIGHT && QuizGame.HEIGHT - Gdx.input.getY() > START_BUTTON_Y) {
 //            // wczytaj nową teksturę
 //        }
-
         if(Gdx.input.isTouched())
         {
             Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
-
+            Gdx.app.log("xy", tmp.x + " " + tmp.y);
             if(start.contains(tmp.x,tmp.y))
             {
                 gsm.set(new StageState(gsm));
