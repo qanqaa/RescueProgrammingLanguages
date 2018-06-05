@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
@@ -25,16 +28,35 @@ public class ProfileState extends State {
     private TextField questionsTimeField = new TextField(questionsTimeFieldtext, skin);
     private Texture background;
     private Texture photo;
+
     private String photoPath = "photos/";
     private final static int PHOTO_WIDTH = 300;
     private final static int PHOTO_HEIGHT = 300;
+
+    private Texture exitbg;
+
+    private static final int ALL_BUTTONS_WIDTH = 300;
+    private static final int ALL_BUTTONS_HEIGHT = 80;
+
+    // dla funkcji draw()
+    private static final int EXIT_BUTTON_Y = 10;
+
+    private int ALL_BUTTONS_X = QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2;
+
+    private Rectangle exit = new Rectangle(ALL_BUTTONS_X, exit_y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
+
+
+
+    //TODO: AWT working on Android? And why is this awt
+//dla getX() / getY()
+    private static final int exit_y = QuizGame.HEIGHT - EXIT_BUTTON_Y - ALL_BUTTONS_HEIGHT;
 
     Stage stage = new Stage();
     public ProfileState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
         background = new Texture(Gdx.files.internal("profilebg.png"));
-
+        exitbg = new Texture("exitbutton.png");
 
     }
 
@@ -46,6 +68,12 @@ public class ProfileState extends State {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             ProfileManager.getInstance().setCurrentProfile(new Profile(nameField.getText(), Double.parseDouble(questionsTimeField.getText())));
             gsm.set(new MenuState(gsm));
+        }
+        if (Gdx.input.isTouched()) {
+            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            if (exit.contains(tmp.x, tmp.y)) {
+                gsm.set(new MenuState(gsm));
+            }
         }
     }
 
@@ -61,6 +89,7 @@ public class ProfileState extends State {
         layout.setText(font, "CURRENT PROFILE");
         sb.begin();
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        sb.draw(exitbg, QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2, EXIT_BUTTON_Y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
         String photoName = ProfileManager.getInstance().getCurrentProfile().getPhoto();
         //TODO: Add PhotoManager to get profile's photo or default photo
         if (photoName != null) {
