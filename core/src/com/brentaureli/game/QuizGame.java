@@ -33,20 +33,6 @@ public class QuizGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-
-        float accelY = Gdx.input.getAccelerometerY();
-
-
-
-        if (accelY < -1 ){
-            Gdx.app.log("ACCELEROMETER", "<---");
-        }
-
-
-        if (accelY > +1){
-            Gdx.app.log("ACCELEROMETER", "--->");
-        }
-
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gsm.update(Gdx.graphics.getDeltaTime());
         gsm.render(batch);
