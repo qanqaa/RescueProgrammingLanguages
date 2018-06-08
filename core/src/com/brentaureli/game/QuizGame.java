@@ -11,8 +11,8 @@ import com.brentaureli.game.states.GameStateManager;
 import com.brentaureli.game.states.MenuState;
 
 public class QuizGame extends ApplicationAdapter {
-    public static final int WIDTH = 480;
-    public static final int HEIGHT = 800;
+    public static final int WIDTH = 1080;
+    public static final int HEIGHT = 1920;
 
     public static final String TITLE = "Rescue Programming Languages";
     private GameStateManager gsm;

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,15 +22,30 @@ public class MenuState extends State {
 
     private boolean peripheralAvailable;
     private Stage stage;
-    private Texture myTexture;
-    private TextureRegion myTextureRegion;
-    private TextureRegionDrawable myTexRegionDrawable;
-    private ImageButton button;
+
+    //for menu buttons
+    private TextureRegion playTextureRegion;
+    private TextureRegionDrawable playTexRegionDrawable;
+    private ImageButton playButton;
+
+    private TextureRegion profileTextureRegion;
+    private TextureRegionDrawable profileTexRegionDrawable;
+    private ImageButton profileButton;
+
+    private TextureRegion scoresTextureRegion;
+    private TextureRegionDrawable scoresTexRegionDrawable;
+    private ImageButton scoresButton;
+
+    private TextureRegion exitTextureRegion;
+    private TextureRegionDrawable exitTexRegionDrawable;
+    private ImageButton exitButton;
+
+
 
     ProfileManager profileManager = ProfileManager.getInstance();
     // deklaracja wielkości buttonów
-    private static final int START_BUTTON_WIDTH = 300;
-    private static final int START_BUTTON_HEIGHT = 80;
+    private static final int START_BUTTON_WIDTH = 600;
+    private static final int START_BUTTON_HEIGHT = 160;
     private static final int PROFILE_BUTTON_WIDTH = 300;
     private static final int PROFILE_BUTTON_HEIGHT = 80;
     private static final int SCORES_BUTTON_WIDTH = 300;
@@ -56,11 +72,6 @@ public class MenuState extends State {
     private static final int scores_y = QuizGame.HEIGHT - SCORES_BUTTON_Y - SCORES_BUTTON_HEIGHT;
     private static final int exit_y = QuizGame.HEIGHT - EXIT_BUTTON_Y - EXIT_BUTTON_HEIGHT;
 
-    private Rectangle start = new Rectangle(start_x, start_y, START_BUTTON_WIDTH, START_BUTTON_HEIGHT);
-    private Rectangle profile = new Rectangle(profile_x, profile_y, PROFILE_BUTTON_WIDTH, PROFILE_BUTTON_HEIGHT);
-    private Rectangle scores = new Rectangle(scores_x, scores_y, SCORES_BUTTON_WIDTH, SCORES_BUTTON_HEIGHT);
-    private Rectangle exit = new Rectangle(exit_x, exit_y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-
 
     private Texture background;
     private Texture playBtn;
@@ -78,28 +89,72 @@ public class MenuState extends State {
         peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
 
 
-        myTexture = new Texture(Gdx.files.internal("playbutton.png"));
-
         background = new Texture("bg.png");
         playBtn = new Texture(Gdx.files.internal("playbutton.png"));
         exitBtn = new Texture(Gdx.files.internal("exitbutton.png"));
         profileBtn = new Texture(Gdx.files.internal("profilebutton.png"));
         scoresBtn = new Texture(Gdx.files.internal("scoresbutton.png"));
 
-        myTextureRegion = new TextureRegion(myTexture);
-        myTexRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-        button = new ImageButton(myTexRegionDrawable); //Set the button up
+        playTextureRegion = new TextureRegion(playBtn);
+        playTexRegionDrawable = new TextureRegionDrawable(playTextureRegion);
+        playButton = new ImageButton(playTexRegionDrawable); //Set the button up
+
+        profileTextureRegion = new TextureRegion(profileBtn);
+        profileTexRegionDrawable = new TextureRegionDrawable(profileTextureRegion);
+        profileButton = new ImageButton(profileTexRegionDrawable); //Set the button up
+
+        scoresTextureRegion = new TextureRegion(scoresBtn);
+        scoresTexRegionDrawable = new TextureRegionDrawable(scoresTextureRegion);
+        scoresButton = new ImageButton(scoresTexRegionDrawable); //Set the button up
+
+        exitTextureRegion = new TextureRegion(exitBtn);
+        exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
+        exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up
 
         stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
-        stage.addActor(button); //Add the button to the stage to perform rendering and take input.
+
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom();
+        table.add(playButton);
+        table.row();
+        table.add(profileButton);
+        table.row();
+        table.add(scoresButton);
+        table.row();
+        table.add(exitButton);
+        table.row();
 
-        button.addListener(new ClickListener() {
+        stage.addActor(table);
+
+        playButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y){
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new StageState(gsm));
+            }
+        });
+        profileButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y){
+                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
+                gsm.set(new ProfileState(gsm));
+            }
+        });
+        scoresButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y){
+                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
+                gsm.set(new ScoresState(gsm));
+            }
+        });
+        exitButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y){
+                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
+                Gdx.app.exit();
             }
         });
 
@@ -156,12 +211,11 @@ public class MenuState extends State {
 
 
         sb.begin();
-        sb.draw(playBtn,10,10);
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        sb.draw(playBtn, QuizGame.WIDTH / 2 - START_BUTTON_WIDTH / 2,  START_BUTTON_Y, START_BUTTON_WIDTH, START_BUTTON_HEIGHT);
-        sb.draw(profileBtn, QuizGame.WIDTH / 2 - PROFILE_BUTTON_WIDTH / 2, PROFILE_BUTTON_Y, PROFILE_BUTTON_WIDTH, PROFILE_BUTTON_HEIGHT);
-        sb.draw(scoresBtn, QuizGame.WIDTH / 2 - SCORES_BUTTON_WIDTH / 2, SCORES_BUTTON_Y, SCORES_BUTTON_WIDTH, SCORES_BUTTON_HEIGHT);
-        sb.draw(exitBtn, QuizGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+//        sb.draw(playBtn, QuizGame.WIDTH / 2 - START_BUTTON_WIDTH / 2,  START_BUTTON_Y, START_BUTTON_WIDTH, START_BUTTON_HEIGHT);
+//        sb.draw(profileBtn, QuizGame.WIDTH / 2 - PROFILE_BUTTON_WIDTH / 2, PROFILE_BUTTON_Y, PROFILE_BUTTON_WIDTH, PROFILE_BUTTON_HEIGHT);
+//        sb.draw(scoresBtn, QuizGame.WIDTH / 2 - SCORES_BUTTON_WIDTH / 2, SCORES_BUTTON_Y, SCORES_BUTTON_WIDTH, SCORES_BUTTON_HEIGHT);
+//        sb.draw(exitBtn, QuizGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
         sb.end();
 
         stage.draw();
