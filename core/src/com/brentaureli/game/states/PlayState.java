@@ -25,7 +25,8 @@ import java.util.Map;
 public class PlayState extends State {
     private Profile currentProfile;
 
-
+    private boolean peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);;
+    private float xRot; // here
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
     private static final int OPTIONS_AMOUNT = 10;
@@ -101,6 +102,18 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
+
+        if(peripheralAvailable) {
+            xRot = Gdx.input.getAccelerometerX();
+            Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
+        }
+
+        if (xRot < -1){
+            player.moveRight();
+        }
+        if (xRot > +1 ){
+            player.moveLeft();
+        }
         handleInput();
         player.update(dt);
 

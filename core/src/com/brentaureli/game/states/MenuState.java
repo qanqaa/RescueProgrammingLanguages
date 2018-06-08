@@ -21,7 +21,7 @@ import com.brentaureli.game.profiles.ProfileManager;
 
 public class MenuState extends State {
 
-    private boolean peripheralAvailable;
+
     private Stage stage;
 
     //for menu buttons
@@ -87,7 +87,7 @@ public class MenuState extends State {
         //TODO: LOAD PROFILE FROM MEMORY/CACHE/DATABASE?
         super(gsm);
 
-        peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+
 
 
         background = new Texture("bg.png");
@@ -200,10 +200,7 @@ public class MenuState extends State {
 
     @Override
     public void update(float dt) {handleInput();
-        if(peripheralAvailable) {
-            xRot = Gdx.input.getAccelerometerX();
-            Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
-        }
+
     }
 
     @Override
