@@ -105,7 +105,7 @@ public class PlayState extends State {
 
         if(peripheralAvailable) {
             xRot = Gdx.input.getAccelerometerX();
-            Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
+            //Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
         }
 
         if (xRot < -1){

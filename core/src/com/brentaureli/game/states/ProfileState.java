@@ -2,6 +2,7 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.Profile;
@@ -57,6 +59,7 @@ public class ProfileState extends State {
 //dla getX() / getY()
     private static final int exit_y = QuizGame.HEIGHT - EXIT_BUTTON_Y - ALL_BUTTONS_HEIGHT;
 
+
     Stage stage = new Stage();
     public ProfileState(GameStateManager gsm) {
         super(gsm);
@@ -79,19 +82,28 @@ public class ProfileState extends State {
         BitmapFont font12 = generator.generateFont(parameter);
         nameLabelStyle.font = font12;
 
-       // TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        // textFieldStyle.font = font12;
 
         Label label1 = new Label("NAME: ",nameLabelStyle);
         Label label2 = new Label("QUESTIONS TIME: ",nameLabelStyle);
         //nameField = new TextField("",textFieldStyle);
         //questionsTimeField = new TextField(String.valueOf(ProfileManager.getInstance().getCurrentProfile().getTimeForQuestion()) , textFieldStyle);
 
+        parameter.size = 80;
+        font12 = generator.generateFont(parameter);
+        TextField.TextFieldStyle textFieldStyle = skin.get(TextField.TextFieldStyle.class);
+        textFieldStyle.font = font12;
+//        textFieldStyle.cursor = skin.newDrawable("cursor", Color.GREEN);
+//        textFieldStyle.cursor.setMinHeight(80f);
+//        nameField.setCursorPosition(10);
+
+
+        //textFieldStyle.cursor.setMinWidth(60f);
+
         Table table = new Table();
         table.setFillParent(true);
         table.bottom();
         table.add(label1).right();
-        table.add(nameField).minWidth(500).padBottom(10).padLeft(20).height(120);
+        table.add(nameField).minWidth(500).padBottom(50).padLeft(20).height(120);
         table.row().height(120);
         table.add(label2).right().padBottom(100);
         table.add(questionsTimeField).minWidth(500).padBottom(100).padLeft(20);
@@ -108,6 +120,8 @@ public class ProfileState extends State {
                 gsm.set(new MenuState(gsm));
             }
         });
+
+
 
     }
 
