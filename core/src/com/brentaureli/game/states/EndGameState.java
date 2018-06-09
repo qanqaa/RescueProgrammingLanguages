@@ -21,6 +21,8 @@ public class EndGameState extends State {
     private String newHighScoreText = "NEW HIGH SCORE!";
     private Texture background;
 
+    // TODO: freefont, table, play again button, exit button
+
     public EndGameState(GameStateManager gsm, int score, boolean newRecord) {
         super(gsm);
         background = new Texture("endgamebg.png");

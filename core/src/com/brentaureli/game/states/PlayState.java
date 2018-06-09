@@ -48,6 +48,7 @@ public class PlayState extends State {
     private Texture background;
     private int stage;
 
+    // TODO: background, player, font, table?
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     BitmapFont font12 = generator.generateFont(parameter);
@@ -83,13 +84,6 @@ public class PlayState extends State {
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.moveLeft();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.moveRight();
-        }
-            player.jump();
     }
 
     private void updateScore() {
@@ -114,6 +108,8 @@ public class PlayState extends State {
         if (xRot > +1 ){
             player.moveLeft();
         }
+        player.jump();
+
         handleInput();
         player.update(dt);
 
@@ -240,5 +236,6 @@ public class PlayState extends State {
         for (Option option : options)
             option.dispose();
         font12.dispose();
+        background.dispose();
     }
 }

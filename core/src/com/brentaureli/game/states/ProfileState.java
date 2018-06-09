@@ -41,26 +41,20 @@ public class ProfileState extends State {
 
     private Texture exitBtn;
 
-    private static final int ALL_BUTTONS_WIDTH = 300;
-    private static final int ALL_BUTTONS_HEIGHT = 80;
-
-    // dla funkcji draw()
-    private static final int EXIT_BUTTON_Y = 10;
-
-    private int ALL_BUTTONS_X = QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2;
 
     private TextureRegion exitTextureRegion;
     private TextureRegionDrawable exitTexRegionDrawable;
     private ImageButton exitButton;
+    Stage stage;
 
 
 
-    //TODO: AWT working on Android? And why is this awt
+// TODO: font in textfield
 //dla getX() / getY()
-    private static final int exit_y = QuizGame.HEIGHT - EXIT_BUTTON_Y - ALL_BUTTONS_HEIGHT;
 
 
-    Stage stage = new Stage();
+
+
     public ProfileState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
@@ -85,19 +79,12 @@ public class ProfileState extends State {
 
         Label label1 = new Label("NAME: ",nameLabelStyle);
         Label label2 = new Label("QUESTIONS TIME: ",nameLabelStyle);
-        //nameField = new TextField("",textFieldStyle);
-        //questionsTimeField = new TextField(String.valueOf(ProfileManager.getInstance().getCurrentProfile().getTimeForQuestion()) , textFieldStyle);
 
         parameter.size = 80;
         font12 = generator.generateFont(parameter);
         TextField.TextFieldStyle textFieldStyle = skin.get(TextField.TextFieldStyle.class);
         textFieldStyle.font = font12;
-//        textFieldStyle.cursor = skin.newDrawable("cursor", Color.GREEN);
-//        textFieldStyle.cursor.setMinHeight(80f);
-//        nameField.setCursorPosition(10);
 
-
-        //textFieldStyle.cursor.setMinWidth(60f);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -127,19 +114,7 @@ public class ProfileState extends State {
 
     @Override
     public void handleInput() {
-//        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-//            gsm.set(new MenuState(gsm));
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-//            ProfileManager.getInstance().setCurrentProfile(new Profile(nameField.getText(), Double.parseDouble(questionsTimeField.getText())));
-//            gsm.set(new MenuState(gsm));
-//        }
-//        if (Gdx.input.isTouched()) {
-//            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            if (exit.contains(tmp.x, tmp.y)) {
-//                gsm.set(new MenuState(gsm));
-//            }
-//        }
+
     }
 
     @Override
@@ -164,13 +139,6 @@ public class ProfileState extends State {
         sb.draw(photo, gameWidth / 2 - PHOTO_WIDTH / 2, gameHeight / 2 - PHOTO_HEIGHT / 4, PHOTO_WIDTH, PHOTO_HEIGHT);
         sb.end();
 
-//        nameField.setPosition(gameWidth / 2, gameHeight - 580);
-//        nameField.setSize(750, 200);
-//        questionsTimeField.setPosition(gameWidth / 2, gameHeight - 630);
-//        questionsTimeField.setSize(750, 200);
-//        stage.addActor(nameField);
-//        stage.addActor(questionsTimeField);
-//        Gdx.input.setInputProcessor(stage);
         stage.draw();
         stage.act();
 
@@ -178,7 +146,11 @@ public class ProfileState extends State {
 
     @Override
     public void dispose() {
+
         font.dispose();
+        exitBtn.dispose();
         background.dispose();
+        stage.dispose();
+        photo.dispose();
     }
 }

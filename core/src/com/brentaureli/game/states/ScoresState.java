@@ -35,15 +35,6 @@ public class ScoresState extends State {
 
     private Texture exitBtn;
 
-    private static final int ALL_BUTTONS_WIDTH = 300;
-    private static final int ALL_BUTTONS_HEIGHT = 80;
-
-    // dla funkcji draw()
-    private static final int EXIT_BUTTON_Y = 10;
-
-    private int ALL_BUTTONS_X = QuizGame.WIDTH / 2 - ALL_BUTTONS_WIDTH / 2;
-
-    private Rectangle exit = new Rectangle(ALL_BUTTONS_X, exit_y, ALL_BUTTONS_WIDTH, ALL_BUTTONS_HEIGHT);
 
     private TextureRegion exitTextureRegion;
     private TextureRegionDrawable exitTexRegionDrawable;
@@ -51,9 +42,7 @@ public class ScoresState extends State {
 
     private Stage stage;
 
-    //TODO: AWT working on Android? And why is this awt
-//dla getX() / getY()
-    private static final int exit_y = QuizGame.HEIGHT - EXIT_BUTTON_Y - ALL_BUTTONS_HEIGHT;
+
 
     public ScoresState(GameStateManager gsm) {
         super(gsm);
@@ -98,16 +87,17 @@ public class ScoresState extends State {
 
     @Override
     public void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            gsm.set(new MenuState(gsm));
-        }
-        if (Gdx.input.isTouched()) {
-            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            if (exit.contains(tmp.x, tmp.y)) {
-                gsm.set(new MenuState(gsm));
-            }
-
-        }
+        // FOR DESKTOP
+//        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+//            gsm.set(new MenuState(gsm));
+//        }
+//        if (Gdx.input.isTouched()) {
+//            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            if (exit.contains(tmp.x, tmp.y)) {
+//                gsm.set(new MenuState(gsm));
+//            }
+//
+//        }
     }
 
     @Override
@@ -159,9 +149,13 @@ public class ScoresState extends State {
 
     @Override
     public void dispose() {
+        exitBtn.dispose();
+        defaultPhoto.dispose();
+        photo.dispose();
         font.dispose();
         photo.dispose();
         defaultPhoto.dispose();
         background.dispose();
+        stage.dispose();
     }
 }
