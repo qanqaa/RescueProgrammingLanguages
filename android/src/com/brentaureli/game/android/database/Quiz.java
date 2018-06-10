@@ -21,8 +21,6 @@ public class Quiz {
     private String answerB;
     @ColumnInfo(name = "correct_Answer")
     private String correctAnswer;
-    @ColumnInfo(name = "category_for_stage")
-    private String category;
 
     public int getId() {
         return id;
@@ -78,13 +76,5 @@ public class Quiz {
 
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }
