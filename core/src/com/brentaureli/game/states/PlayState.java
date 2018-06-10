@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.brentaureli.game.QuizGame;
+import com.brentaureli.game.commons.StageInfo;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 import com.brentaureli.game.questions.Question;
@@ -24,7 +26,8 @@ import java.util.Map;
 public class PlayState extends State {
     private Profile currentProfile;
 
-
+    private boolean peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);;
+    private float xRot; // here
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
     private static final int OPTIONS_AMOUNT = 10;
@@ -44,13 +47,17 @@ public class PlayState extends State {
     private double maxY;
     private float gameSpeed1s = velocity * 2.3f;
     private Texture background;
-    private int stage;
+    private StageInfo stageInfo;
 
+    // TODO: background, player, font, table?
+    private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    private BitmapFont font12 = generator.generateFont(parameter);
 
-    public PlayState(GameStateManager gsm, int stage) {
+    public PlayState(GameStateManager gsm, StageInfo stageInfo) {
         super(gsm);
         background = new Texture(Gdx.files.internal("playstatebg.png"));
-        this.stage = stage;
+        this.stageInfo = stageInfo;
         timeSinceStart = System.currentTimeMillis();
         guiCam = new OrthographicCamera();
         guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -61,7 +68,7 @@ public class PlayState extends State {
         timeForQuestion = currentProfile.getTimeForQuestion();
         timeBetweenQuestions = timeForQuestion / 4;
 
-        questionsForStage = questionManager.prepareQuestionsForStage(stage);
+        questionsForStage = questionManager.prepareQuestionsForStage(stageInfo.getLevel());
 
         score = 0;
 
@@ -79,17 +86,10 @@ public class PlayState extends State {
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.moveLeft();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.moveRight();
-        }
-            player.jump();
     }
 
     private void updateScore() {
-        score += stage * calculateMultiplier();
+        score += stageInfo.getLevel() * calculateMultiplier();
     }
 
     private int calculateMultiplier() {
@@ -98,6 +98,20 @@ public class PlayState extends State {
 
     @Override
     public void update(float dt) {
+
+        if(peripheralAvailable) {
+            xRot = Gdx.input.getAccelerometerX();
+            //Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
+        }
+
+        if (xRot < -1){
+            player.moveRight();
+        }
+        if (xRot > +1 ){
+            player.moveLeft();
+        }
+        player.jump();
+
         handleInput();
         player.update(dt);
 
@@ -119,8 +133,8 @@ public class PlayState extends State {
 
     private boolean checkPlayerHighScore(int score) {
         Map<Integer, Integer> currentProfileStageScoreMap = currentProfile.getStageScoreMap();
-        if (score > currentProfileStageScoreMap.get(stage)) {
-            currentProfileStageScoreMap.put(stage, score);
+        if (score > currentProfileStageScoreMap.get(stageInfo.getLevel())) {
+            currentProfileStageScoreMap.put(stageInfo.getLevel(), score);
             PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
             return true;
         }
@@ -133,16 +147,21 @@ public class PlayState extends State {
         return stageScoreMap.values().stream().reduce(0, Integer::sum);
     }
 
-    private void renderQuestionWithAnswers(BitmapFont font, SpriteBatch sb, Question question) {
+    private void renderQuestionWithAnswers(BitmapFont font12, SpriteBatch sb, Question question) {
         GlyphLayout glyphLayout = new GlyphLayout();
-        glyphLayout.setText(font, question.getQuestion());
+        parameter.size = 40;
+        font12 = generator.generateFont(parameter);
+        glyphLayout.setText(font12, question.getQuestion());
         float width = glyphLayout.width;
         float height = glyphLayout.height;
-        font.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
+
+
+
+        font12.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
         glyphLayout.setText(font, question.getQuestion());
-        font.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+        font12.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
         glyphLayout.setText(font, question.getQuestion());
-        font.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+        font12.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
     }
 
     @Override
@@ -152,36 +171,39 @@ public class PlayState extends State {
         sb.begin();
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
-            setStageTextOpacity(font, System.currentTimeMillis() - timeSinceStart);
+            setStageTextOpacity(font12, System.currentTimeMillis() - timeSinceStart);
             GlyphLayout stageLayout = new GlyphLayout();
-            stageLayout.setText(font, "STAGE" + stage);
+            stageLayout.setText(font12, stageInfo.getStageName());
             float width = stageLayout.width;
             float height = stageLayout.height;
-            font.getData().setScale(4, 4);
-            font.draw(sb, "STAGE " + stage, gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
-            font.setColor(1, 1, 1, 1);
+            parameter.size = 120;
+            font12 = generator.generateFont(parameter);
+            font12.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
+            font12.setColor(1, 1, 1, 1);
         }
-        font.getData().setScale(2, 2);
+        parameter.size = 20;
+        font12 = generator.generateFont(parameter);
         if (currentQuestion == 0) {
             if (player.getPosition().y > gameSpeed1s * stageInfoTimeSeconds && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
-                renderQuestionWithAnswers(font, sb, options.get(currentQuestion).getQuestion());
+                renderQuestionWithAnswers(font12, sb, options.get(currentQuestion).getQuestion());
             } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
                 currentQuestion++;
             }
         } else {
             if (currentQuestion < OPTIONS_AMOUNT) {
                 if (player.getPosition().y > (options.get(currentQuestion - 1).getPosTopTube().y + timeBetweenQuestions * gameSpeed1s) && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
-                    renderQuestionWithAnswers(font, sb, options.get(currentQuestion).getQuestion());
+                    renderQuestionWithAnswers(font12, sb, options.get(currentQuestion).getQuestion());
                 } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
                     currentQuestion++;
                 }
             }
         }
 
-        font.getData().setScale(1, 1);
+        parameter.size = 35;
+        font12 = generator.generateFont(parameter);
         //TODO: center scores, position texts
-        font.draw(sb, "SCORE:" + score, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
-        font.draw(sb, "YOUR BEST:" + currentProfile.getStageScoreMap().get(stage), Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 70);
+        font12.draw(sb, "SCORE: " + score, Gdx.graphics.getWidth()- 400, Gdx.graphics.getHeight() - 50);
+        font12.draw(sb, "YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), Gdx.graphics.getWidth() - 220, Gdx.graphics.getHeight() - 50);
         sb.end();
 
         sb.setProjectionMatrix(cam.combined);
@@ -197,14 +219,14 @@ public class PlayState extends State {
     }
 
 
-    private void setStageTextOpacity(BitmapFont font, long timeDifference) {
+    private void setStageTextOpacity(BitmapFont font12, long timeDifference) {
         long stageInfoTimeMax = 1000 * stageInfoTimeSeconds;
         float opacityChange = 2f / stageInfoTimeMax;
         if (timeDifference < (stageInfoTimeMax / 2)) {
-            font.setColor(1, 1, 1, 1);
+            font12.setColor(1, 1, 1, 1);
         } else {
             float opacity = 1f - ((timeDifference - stageInfoTimeMax / 2) * opacityChange);
-            font.setColor(1, 1, 1, opacity);
+            font12.setColor(1, 1, 1, opacity);
         }
     }
 
@@ -215,6 +237,7 @@ public class PlayState extends State {
         player.dispose();
         for (Option option : options)
             option.dispose();
-        font.dispose();
+        font12.dispose();
+        background.dispose();
     }
 }

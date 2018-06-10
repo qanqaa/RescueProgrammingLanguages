@@ -2,13 +2,23 @@ package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
@@ -20,31 +30,91 @@ public class ProfileState extends State {
     private String nameText = ProfileManager.getInstance().getCurrentProfile().getName();
     private String questionsTimeFieldtext = String.valueOf(ProfileManager.getInstance().getCurrentProfile().getTimeForQuestion());
     private TextField nameField = new TextField(nameText, skin);
+
     private TextField questionsTimeField = new TextField(questionsTimeFieldtext, skin);
     private Texture background;
     private Texture photo;
-    private String photoPath = "photos/";
-    private final static int PHOTO_WIDTH = 300;
-    private final static int PHOTO_HEIGHT = 300;
 
-    Stage stage = new Stage();
+    private String photoPath = "photos/";
+    private final static int PHOTO_WIDTH = 800;
+    private final static int PHOTO_HEIGHT = 800;
+
+    private Texture exitBtn;
+
+
+    private TextureRegion exitTextureRegion;
+    private TextureRegionDrawable exitTexRegionDrawable;
+    private ImageButton exitButton;
+    Stage stage;
+
+
+
+// TODO: font in textfield
+//dla getX() / getY()
+
+
+
+
     public ProfileState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
         background = new Texture(Gdx.files.internal("profilebg.png"));
+        exitBtn = new Texture("exitbutton.png");
+
+        exitTextureRegion = new TextureRegion(exitBtn);
+        exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
+        exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up
+
+        stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
+
+        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+
+        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 120;
+        BitmapFont font12 = generator.generateFont(parameter);
+        nameLabelStyle.font = font12;
+
+
+        Label label1 = new Label("NAME: ",nameLabelStyle);
+        Label label2 = new Label("QUESTIONS TIME: ",nameLabelStyle);
+
+        parameter.size = 80;
+        font12 = generator.generateFont(parameter);
+        TextField.TextFieldStyle textFieldStyle = skin.get(TextField.TextFieldStyle.class);
+        textFieldStyle.font = font12;
+
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom();
+        table.add(label1).right();
+        table.add(nameField).minWidth(500).padBottom(50).padLeft(20).height(120);
+        table.row().height(120);
+        table.add(label2).right().padBottom(100);
+        table.add(questionsTimeField).minWidth(500).padBottom(100).padLeft(20);
+        table.row();
+        table.add(exitButton).colspan(2);
+        table.row();
+
+        stage.addActor(table);
+
+        exitButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y){
+                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
+                gsm.set(new MenuState(gsm));
+            }
+        });
+
 
 
     }
 
     @Override
     public void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            gsm.set(new MenuState(gsm));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            ProfileManager.getInstance().setCurrentProfile(new Profile(nameField.getText(), Double.parseDouble(questionsTimeField.getText())));
-            gsm.set(new MenuState(gsm));
-        }
+
     }
 
     @Override
@@ -67,23 +137,20 @@ public class ProfileState extends State {
             photo = new Texture(Gdx.files.internal(photoPath + "defaultPhoto.png"));
         }
         sb.draw(photo, gameWidth / 2 - PHOTO_WIDTH / 2, gameHeight / 2 - PHOTO_HEIGHT / 4, PHOTO_WIDTH, PHOTO_HEIGHT);
-        font.draw(sb, "NAME", gameWidth / 2 - layout.width, gameHeight - 550);
-        font.draw(sb, "QUESTIONS TIME", gameWidth / 2 - layout.width, gameHeight - 600);
         sb.end();
-        nameField.setPosition(gameWidth / 2, gameHeight - 580);
-        nameField.setSize(150, 40);
-        questionsTimeField.setPosition(gameWidth / 2, gameHeight - 630);
-        questionsTimeField.setSize(50, 40);
-        stage.addActor(nameField);
-        stage.addActor(questionsTimeField);
-        Gdx.input.setInputProcessor(stage);
+
         stage.draw();
         stage.act();
+
     }
 
     @Override
     public void dispose() {
+
         font.dispose();
+        exitBtn.dispose();
         background.dispose();
+        stage.dispose();
+        photo.dispose();
     }
 }

@@ -6,7 +6,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.scores.PlayerScore;
 import com.brentaureli.game.scores.PlayerScoreManagerMock;
 
@@ -22,10 +33,22 @@ public class ScoresState extends State {
     private Texture photo;
     private String photosFolder = "photos/";
 
+    private Texture exitBtn;
+
+
+    private TextureRegion exitTextureRegion;
+    private TextureRegionDrawable exitTexRegionDrawable;
+    private ImageButton exitButton;
+
+    private Stage stage;
+
+
+
     public ScoresState(GameStateManager gsm) {
         super(gsm);
         font = new BitmapFont();
         background = new Texture(Gdx.files.internal("highscoresbg.png"));
+        exitBtn = new Texture("exitbutton.png");
         //TODO: IMPLEMENT DATABASE HIGHSCORES
         //playerScoreList = PlayerScoreManager.getTop10HighScores();
         playerScoreList = PlayerScoreManagerMock.getInstance().prepare20Players();
@@ -34,13 +57,47 @@ public class ScoresState extends State {
         }
         defaultPhoto = new Texture(Gdx.files.internal(photosFolder + "defaultPhoto.png"));
 
+
+
+        exitTextureRegion = new TextureRegion(exitBtn);
+        exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
+        exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up
+
+        stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
+
+        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom();
+
+        table.add(exitButton);
+        table.row();
+
+        stage.addActor(table);
+
+        exitButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y){
+                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
+                gsm.set(new MenuState(gsm));
+            }
+        });
     }
 
     @Override
     public void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            gsm.set(new MenuState(gsm));
-        }
+        // FOR DESKTOP
+//        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+//            gsm.set(new MenuState(gsm));
+//        }
+//        if (Gdx.input.isTouched()) {
+//            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            if (exit.contains(tmp.x, tmp.y)) {
+//                gsm.set(new MenuState(gsm));
+//            }
+//
+//        }
     }
 
     @Override
@@ -56,19 +113,18 @@ public class ScoresState extends State {
         int height = Gdx.graphics.getHeight();
 
         GlyphLayout layout = new GlyphLayout();
-        layout.setText(font, "HIGH SCORES");
         sb.begin();
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         int nameWidth = width / 6;
-        int scoreWidth = 2 * width / 3;
+        int scoreWidth = (2 * width / 3)+180;
         int photoWidth = nameWidth - 50;
 
-        font.getData().setScale(2, 2);
+
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 40;
+        parameter.size = 120;
         BitmapFont font12 = generator.generateFont(parameter);
-        height -= 200;
+        height -= 800;
         //TODO: photo Manager
         for (PlayerScore playerScore : playerScoreList) {
             if (playerScore.getProfile().getPhoto() != null) {
@@ -76,21 +132,30 @@ public class ScoresState extends State {
             } else {
                 photo = defaultPhoto;
             }
-            height -= 50;
-            font12.draw(sb, playerScore.getProfile().getName(), nameWidth, height);
-            font12.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth, height);
-            sb.draw(photo, photoWidth, height - 30, 30, 30);
+            height -= 125;
+            font12.draw(sb, playerScore.getProfile().getName(), nameWidth+15, height);
+            font12.draw(sb, String.valueOf(playerScore.getScore()), scoreWidth+40, height);
+            sb.draw(photo, photoWidth-100, height - 100, 100, 100);
         }
         sb.end();
+
+        stage.draw();
+        stage.act();
+
         generator.dispose();
         font12.dispose();
+
     }
 
     @Override
     public void dispose() {
+        exitBtn.dispose();
+        defaultPhoto.dispose();
+        photo.dispose();
         font.dispose();
         photo.dispose();
         defaultPhoto.dispose();
         background.dispose();
+        stage.dispose();
     }
 }
