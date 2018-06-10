@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.brentaureli.game.QuizGame;
+import com.brentaureli.game.commons.StageInfo;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 import com.brentaureli.game.questions.Question;
@@ -46,16 +47,17 @@ public class PlayState extends State {
     private double maxY;
     private float gameSpeed1s = velocity * 2.3f;
     private Texture background;
-    private int stage;
+    private StageInfo stageInfo;
 
     // TODO: background, player, font, table?
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    BitmapFont font12 = generator.generateFont(parameter);
-    public PlayState(GameStateManager gsm, int stage) {
+    private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    private BitmapFont font12 = generator.generateFont(parameter);
+
+    public PlayState(GameStateManager gsm, StageInfo stageInfo) {
         super(gsm);
         background = new Texture(Gdx.files.internal("playstatebg.png"));
-        this.stage = stage;
+        this.stageInfo = stageInfo;
         timeSinceStart = System.currentTimeMillis();
         guiCam = new OrthographicCamera();
         guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -66,7 +68,7 @@ public class PlayState extends State {
         timeForQuestion = currentProfile.getTimeForQuestion();
         timeBetweenQuestions = timeForQuestion / 4;
 
-        questionsForStage = questionManager.prepareQuestionsForStage(stage);
+        questionsForStage = questionManager.prepareQuestionsForStage(stageInfo.getLevel());
 
         score = 0;
 
@@ -87,7 +89,7 @@ public class PlayState extends State {
     }
 
     private void updateScore() {
-        score += stage * calculateMultiplier();
+        score += stageInfo.getLevel() * calculateMultiplier();
     }
 
     private int calculateMultiplier() {
@@ -131,8 +133,8 @@ public class PlayState extends State {
 
     private boolean checkPlayerHighScore(int score) {
         Map<Integer, Integer> currentProfileStageScoreMap = currentProfile.getStageScoreMap();
-        if (score > currentProfileStageScoreMap.get(stage)) {
-            currentProfileStageScoreMap.put(stage, score);
+        if (score > currentProfileStageScoreMap.get(stageInfo.getLevel())) {
+            currentProfileStageScoreMap.put(stageInfo.getLevel(), score);
             PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
             return true;
         }
@@ -171,12 +173,12 @@ public class PlayState extends State {
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
             setStageTextOpacity(font12, System.currentTimeMillis() - timeSinceStart);
             GlyphLayout stageLayout = new GlyphLayout();
-            stageLayout.setText(font12, "STAGE" + stage);
+            stageLayout.setText(font12, stageInfo.getStageName());
             float width = stageLayout.width;
             float height = stageLayout.height;
             parameter.size = 120;
             font12 = generator.generateFont(parameter);
-            font12.draw(sb, "STAGE " + stage, gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
+            font12.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
             font12.setColor(1, 1, 1, 1);
         }
         parameter.size = 20;
@@ -201,7 +203,7 @@ public class PlayState extends State {
         font12 = generator.generateFont(parameter);
         //TODO: center scores, position texts
         font12.draw(sb, "SCORE: " + score, Gdx.graphics.getWidth()- 400, Gdx.graphics.getHeight() - 50);
-        font12.draw(sb, "YOUR BEST: " + currentProfile.getStageScoreMap().get(stage), Gdx.graphics.getWidth() - 220, Gdx.graphics.getHeight() - 50);
+        font12.draw(sb, "YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), Gdx.graphics.getWidth() - 220, Gdx.graphics.getHeight() - 50);
         sb.end();
 
         sb.setProjectionMatrix(cam.combined);

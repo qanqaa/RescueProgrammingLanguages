@@ -1,13 +1,11 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.brentaureli.game.QuizGame;
+import com.brentaureli.game.commons.StageInfo;
 import com.brentaureli.game.profiles.ProfileManager;
 
 import java.util.Map;
@@ -131,21 +129,21 @@ public class StageState extends State {
             public void clicked(InputEvent event, float x, float y){
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
-                gsm.set(new PlayState(gsm, 1));
+                gsm.set(new PlayState(gsm, new StageInfo("JAVASCRIPT", 1)));
             }
         });
         stage2Button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y){
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
-                gsm.set(new PlayState(gsm, 2));
+                gsm.set(new PlayState(gsm, new StageInfo("C++", 2)));
             }
         });
         stage3Button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y){
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
-                gsm.set(new PlayState(gsm, 3));
+                gsm.set(new PlayState(gsm, new StageInfo("JAVA", 3)));
             }
         });
         exitButton.addListener(new ClickListener() {
