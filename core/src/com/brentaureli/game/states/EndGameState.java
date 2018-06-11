@@ -12,8 +12,6 @@ public class EndGameState extends State {
 
     private int gameHeight = Gdx.graphics.getHeight();
     private int gameWidth = Gdx.graphics.getWidth();
-    private int stageTableStartingWidth = gameWidth / 6;
-    private int stageTableHeight = gameHeight - 100;
     private int score;
     private boolean newRecord;
     private BitmapFont font = new BitmapFont();
@@ -21,7 +19,7 @@ public class EndGameState extends State {
     private String newHighScoreText = "NEW HIGH SCORE!";
     private Texture background;
 
-    // TODO: freefont, table, play again button, exit button
+    // TODO: freefont, table, play again button init, exit button init
 
     public EndGameState(GameStateManager gsm, int score, boolean newRecord) {
         super(gsm);
@@ -48,10 +46,10 @@ public class EndGameState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.begin();
-        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         GlyphLayout glyphLayout = new GlyphLayout();
         glyphLayout.setText(font, yourScoreText);
+        sb.begin();
+        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         font.draw(sb, yourScoreText, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 - 20);
         if (newRecord) {
             glyphLayout.setText(font, newHighScoreText);

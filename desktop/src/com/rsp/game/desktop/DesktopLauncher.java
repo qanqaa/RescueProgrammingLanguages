@@ -1,4 +1,4 @@
-package com.brentaureli.game.desktop;
+package com.rsp.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
