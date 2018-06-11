@@ -19,7 +19,7 @@ public class EndGameState extends State {
     private String newHighScoreText = "NEW HIGH SCORE!";
     private Texture background;
 
-    // TODO: freefont, table, play again button, exit button
+    // TODO: freefont, table, play again button init, exit button init
 
     public EndGameState(GameStateManager gsm, int score, boolean newRecord) {
         super(gsm);
