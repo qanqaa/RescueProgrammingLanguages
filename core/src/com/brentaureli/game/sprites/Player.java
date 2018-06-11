@@ -48,12 +48,12 @@ public class Player {
 
     public void moveLeft(){
         if (position.x > 0) {
-            MOVEMENT = -10;
+            MOVEMENT = -50;
         }
     }
     public void moveRight(){
         if (position.x + bounds.width < Gdx.graphics.getWidth()) {
-            MOVEMENT = 10;
+            MOVEMENT = 50;
         }
     }
 
