@@ -1,21 +1,17 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.profiles.ProfileManager;
 
 
@@ -42,7 +38,6 @@ public class MenuState extends State {
     private ImageButton exitButton;
 
 
-
     ProfileManager profileManager = ProfileManager.getInstance();
 
     private Texture background;
@@ -51,7 +46,6 @@ public class MenuState extends State {
     private Texture profileBtn;
     private Texture scoresBtn;
     private float xRot; // here
-
 
 
     public MenuState(GameStateManager gsm) {
@@ -100,29 +94,29 @@ public class MenuState extends State {
         stage.addActor(table);
 
         playButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y){
-                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            public void clicked(InputEvent event, float x, float y) {
+                Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new StageState(gsm));
             }
         });
         profileButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y){
-                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            public void clicked(InputEvent event, float x, float y) {
+                Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new ProfileState(gsm));
             }
         });
         scoresButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y){
-                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            public void clicked(InputEvent event, float x, float y) {
+                Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new ScoresState(gsm));
             }
         });
         exitButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y){
-                Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+            public void clicked(InputEvent event, float x, float y) {
+                Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 Gdx.app.exit();
             }
@@ -131,14 +125,14 @@ public class MenuState extends State {
 
     }
 
-
     @Override
     public void handleInput() {
 
     }
 
     @Override
-    public void update(float dt) {handleInput();
+    public void update(float dt) {
+        handleInput();
 
     }
 
@@ -146,16 +140,13 @@ public class MenuState extends State {
     public void render(SpriteBatch sb) {
 
         sb.begin();
-        sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        sb.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         sb.end();
 
         stage.draw();
         stage.act();
 
     }
-
-
-
 
     @Override
     public void dispose() {

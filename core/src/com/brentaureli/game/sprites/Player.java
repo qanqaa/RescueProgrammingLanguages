@@ -11,19 +11,19 @@ public class Player {
     private Vector3 position;
     private Vector3 velocity;
     private Rectangle bounds;
-    private Animation birdAnimation;
+    private Animation playerAnimation;
     private Texture texture;
 
     public Player(int x, int y){
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
-        texture = new Texture("birdanimation.png");
-        birdAnimation = new Animation(new TextureRegion(texture), 3, 1f);
+        texture = new Texture("playeranimation.png");
+        playerAnimation = new Animation(new TextureRegion(texture), 3, 1f);
         bounds = new Rectangle(x, y, texture.getWidth() / 3, texture.getHeight());
     }
 
     public void update(float dt){
-        birdAnimation.update(dt);
+        playerAnimation.update(dt);
         velocity.scl(dt);
         position.add(MOVEMENT, velocity.y, 0);
         MOVEMENT=0;
@@ -39,7 +39,7 @@ public class Player {
     }
 
     public TextureRegion getTexture() {
-        return birdAnimation.getFrame();
+        return playerAnimation.getFrame();
     }
 
     public void jump(){
