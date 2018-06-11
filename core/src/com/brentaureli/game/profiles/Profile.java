@@ -8,7 +8,7 @@ public class Profile {
     private String name;
     private String photo;
     private Map<Integer, Integer> stageScoreMap = new HashMap<>();
-    private double timeForQuestion = 5;
+    private float timeForQuestion = 5;
 
     private void initializeStageScores() {
         stageScoreMap.put(1, 0);
@@ -30,13 +30,13 @@ public class Profile {
         initializeStageScores();
     }
 
-    public Profile(String name, double timeForQuestion) {
+    public Profile(String name, float timeForQuestion) {
         this.name = name;
         this.timeForQuestion = timeForQuestion;
         initializeStageScores();
     }
 
-    public Profile(String name, String photo, double timeForQuestion) {
+    public Profile(String name, String photo, float timeForQuestion) {
         this.name = name;
         this.photo = photo;
         this.timeForQuestion = timeForQuestion;
@@ -71,7 +71,7 @@ public class Profile {
         return timeForQuestion;
     }
 
-    public void setTimeForQuestion(double timeForQuestion) {
+    public void setTimeForQuestion(float timeForQuestion) {
         this.timeForQuestion = timeForQuestion;
     }
 }

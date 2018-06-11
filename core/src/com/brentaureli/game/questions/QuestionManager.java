@@ -1,5 +1,7 @@
 package com.brentaureli.game.questions;
 
+import com.brentaureli.game.QuizGame;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,10 +13,8 @@ public class QuestionManager {
 
 
     public List<Question> prepareQuestionsForStage(int stage){
-//        TODO: implement database with questions
-        //List<Question> allQuestions = questionService.getAllQuestionsForStage(stage);
+        List<Question> allQuestions = QuizGame.getInstance().database.getQuestions(stage);
 
-        List<Question> allQuestions = MockQuestions.prepare20Questions();
         List<Question> stageQuestions = new ArrayList<>();
         Random random = new Random();
         if(allQuestions.size()<=10){
@@ -24,7 +24,7 @@ public class QuestionManager {
             int questionIndex = random.nextInt(allQuestions.size());
             Question questionToAdd = allQuestions.get(questionIndex);
             stageQuestions.add(questionToAdd);
-            stageQuestions.remove(questionIndex);
+            allQuestions.remove(questionIndex);
         });
 
         return stageQuestions;
