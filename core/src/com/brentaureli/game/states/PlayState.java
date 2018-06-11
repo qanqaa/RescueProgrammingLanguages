@@ -30,7 +30,7 @@ public class PlayState extends State {
     private float xRot; // here
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
-    private static final int OPTIONS_AMOUNT = 10;
+    private static final int OPTIONS_AMOUNT = 2;
     private int currentQuestion = 0;
     private BitmapFont font = new BitmapFont();
     private int velocity = 100;
