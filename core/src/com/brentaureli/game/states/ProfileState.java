@@ -1,28 +1,28 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.brentaureli.game.QuizGame;
-import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
 
 public class ProfileState extends State {
+    Preferences prefs = Gdx.app.getPreferences("profile");
     private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
@@ -103,6 +103,9 @@ public class ProfileState extends State {
         exitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y){
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
+                String name = nameField.getText();
+                float time = Float.parseFloat(questionsTimeField.getText());
+                ProfileManager.getInstance().updateCurrentProfile(name, time);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new MenuState(gsm));
             }

@@ -8,17 +8,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.brentaureli.game.DatabaseInterface;
+import com.brentaureli.game.profiles.Profile;
+import com.brentaureli.game.scores.PlayerScore;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Question.class}, version = 1)
+@Database(entities = {Highscore.class, Question.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase implements DatabaseInterface {
     private static AppDatabase INSTANCE;
 
-    public abstract UserDao userDao();
+    public abstract HighscoreDao highscoreDao();
     public abstract QuestionDao questionDao();
 
     public synchronized static AppDatabase getInstance(Context context) {
@@ -48,14 +50,31 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
     }
 
     @Override
-    public List<com.brentaureli.game.questions.Question> getQuestions() {
-        List<Question> questions = INSTANCE.questionDao().getAll();
+    public List<com.brentaureli.game.questions.Question> getQuestions(int category) {
+        List<Question> questions = INSTANCE.questionDao().getAll(category);
         List<com.brentaureli.game.questions.Question> gameQuestions = new ArrayList<com.brentaureli.game.questions.Question>();
         for(Question q : questions) {
             gameQuestions.add(new com.brentaureli.game.questions.Question(q.getQuestion(), ImmutableList.of(q.getAnswerA(),q.getAnswerB()),q.getCorrectAnswer()));
         }
-
         return gameQuestions;
+    }
+
+    @Override
+    public List<PlayerScore> getHighscore() {
+        List<Highscore> highscores = INSTANCE.highscoreDao().getAll();
+        List<PlayerScore> playerScores = new ArrayList<PlayerScore>();
+        for(Highscore h : highscores) {
+            playerScores.add(new PlayerScore(new Profile(h.getName()), h.getScore()));
+        }
+        return playerScores;
+    }
+
+    @Override
+    public void insertScore(PlayerScore score) {
+        Highscore highscore = new Highscore();
+        highscore.setName(score.getProfile().getName());
+        highscore.setScore(score.getScore());
+        INSTANCE.highscoreDao().insert(highscore);
     }
 
 }

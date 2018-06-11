@@ -1,14 +1,12 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,9 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.scores.PlayerScore;
-import com.brentaureli.game.scores.PlayerScoreManagerMock;
+import com.brentaureli.game.scores.PlayerScoreManager;
 
 import java.util.List;
 
@@ -49,9 +46,7 @@ public class ScoresState extends State {
         font = new BitmapFont();
         background = new Texture(Gdx.files.internal("highscoresbg.png"));
         exitBtn = new Texture("exitbutton.png");
-        //TODO: IMPLEMENT DATABASE HIGHSCORES
-        //playerScoreList = PlayerScoreManager.getTop10HighScores();
-        playerScoreList = PlayerScoreManagerMock.getInstance().prepare20Players();
+        playerScoreList = PlayerScoreManager.getInstance().getHighscores();
         if (playerScoreList.size() > 10) {
             playerScoreList.subList(10, playerScoreList.size()).clear();
         }

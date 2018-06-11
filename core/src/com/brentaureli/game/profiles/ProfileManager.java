@@ -1,15 +1,13 @@
 package com.brentaureli.game.profiles;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 
 public class ProfileManager {
 
+    Preferences prefs = Gdx.app.getPreferences("profile");
     private Profile currentProfile;
     private static ProfileManager instance = null;
-    private List<Profile> profiles = new ArrayList<>();
-
 
     public static ProfileManager getInstance() {
         if (instance == null) {
@@ -18,33 +16,34 @@ public class ProfileManager {
         return instance;
     }
 
-    public Profile getCurrentProfile() {
-        if (currentProfile == null) {
-            setCurrentProfile(createDefaultProfile());
+    public ProfileManager() {
+        String profileName = prefs.getString("profileName");
+        float profileTime = prefs.getFloat("profileTime");
+        if (profileName.isEmpty()) {
+            this.currentProfile = createDefaultProfile();
         }
+        else {
+            this.currentProfile = new Profile(profileName, profileTime);
+        }
+    }
+
+    public Profile getCurrentProfile() {
         return currentProfile;
     }
 
-    public void setCurrentProfile(Profile currentProfile) {
-        this.currentProfile = getOrCreateProfile(currentProfile);
+    public void updateCurrentProfile(String name, float time) {
+        prefs.putString("profileName", name);
+        prefs.putFloat("profileTime", time);
+        prefs.flush();
+        this.currentProfile.setName(name);
+        this.currentProfile.setTimeForQuestion(time);
     }
 
     private Profile createDefaultProfile() {
-        Profile defaultProfile = new Profile("Player");
-        profiles.add(defaultProfile);
-        return defaultProfile;
-    }
-
-    public Profile getOrCreateProfile(Profile profileToCheck) {
-        Optional<Profile> profile = profiles.stream().filter(o -> o.getName().equals(profileToCheck.getName())).findFirst();
-        if (!profile.isPresent()) {
-            profiles.add(profileToCheck);
-            return profileToCheck;
-        } else {
-            Profile existingProfile = profile.get();
-            existingProfile.setTimeForQuestion(profileToCheck.getTimeForQuestion());
-            //TODO: add photos
-            return existingProfile;
-        }
+        prefs.putString("profileName", "Player");
+        prefs.putFloat("profileTime", 5.0f);
+        prefs.flush();
+        Profile profile = new Profile("Player");
+        return profile;
     }
 }

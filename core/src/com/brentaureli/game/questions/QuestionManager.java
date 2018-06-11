@@ -13,7 +13,7 @@ public class QuestionManager {
 
 
     public List<Question> prepareQuestionsForStage(int stage){
-        List<Question> allQuestions = QuizGame.getInstance().database.getQuestions();
+        List<Question> allQuestions = QuizGame.getInstance().database.getQuestions(stage);
 
         List<Question> stageQuestions = new ArrayList<>();
         Random random = new Random();
@@ -24,7 +24,7 @@ public class QuestionManager {
             int questionIndex = random.nextInt(allQuestions.size());
             Question questionToAdd = allQuestions.get(questionIndex);
             stageQuestions.add(questionToAdd);
-            stageQuestions.remove(questionIndex);
+            allQuestions.remove(questionIndex);
         });
 
         return stageQuestions;

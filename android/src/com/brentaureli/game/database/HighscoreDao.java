@@ -7,10 +7,10 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 @Dao
-public interface QuestionDao {
-    @Query("SELECT * FROM Question WHERE category = :category")
-    List<Question> getAll(int category);
+public interface HighscoreDao {
+    @Query("SELECT * FROM Highscore ORDER BY user_highscore DESC LIMIT 10" )
+    List<Highscore> getAll();
 
     @Insert
-    void insertAll(Question... questions);
+    void insert(Highscore highscore);
 }

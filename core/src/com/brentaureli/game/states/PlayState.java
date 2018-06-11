@@ -15,7 +15,7 @@ import com.brentaureli.game.profiles.ProfileManager;
 import com.brentaureli.game.questions.Question;
 import com.brentaureli.game.questions.QuestionManager;
 import com.brentaureli.game.scores.PlayerScore;
-import com.brentaureli.game.scores.PlayerScoreManagerMock;
+import com.brentaureli.game.scores.PlayerScoreManager;
 import com.brentaureli.game.sprites.Option;
 import com.brentaureli.game.sprites.Player;
 
@@ -30,7 +30,7 @@ public class PlayState extends State {
     private float xRot; // here
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
-    private static final int OPTIONS_AMOUNT = 2;
+    private static final int OPTIONS_AMOUNT = 10;
     private int currentQuestion = 0;
     private BitmapFont font = new BitmapFont();
     private int velocity = 100;
@@ -135,10 +135,10 @@ public class PlayState extends State {
         Map<Integer, Integer> currentProfileStageScoreMap = currentProfile.getStageScoreMap();
         if (score > currentProfileStageScoreMap.get(stageInfo.getLevel())) {
             currentProfileStageScoreMap.put(stageInfo.getLevel(), score);
-            PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
+            PlayerScoreManager.getInstance().addScore(new PlayerScore(currentProfile, calculateOverallScore()));
             return true;
         }
-        PlayerScoreManagerMock.getInstance().updateScore(new PlayerScore(currentProfile, calculateOverallScore()));
+        PlayerScoreManager.getInstance().addScore(new PlayerScore(currentProfile, calculateOverallScore()));
         return false;
     }
 
