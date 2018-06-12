@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.brentaureli.game.commons.StageInfo;
 import com.brentaureli.game.profiles.Profile;
@@ -52,7 +53,9 @@ public class PlayState extends State {
     private StageInfo stageInfo;
     Label.LabelStyle nameLabelStyle;
     Label label1;
+    Label label1a;
     Label label2;
+    Label label2a;
     Label questionText;
     Label answer1;
     Label answer2;
@@ -69,16 +72,17 @@ public class PlayState extends State {
     private BitmapFont font80 ;
     private BitmapFont font20 ;
     private BitmapFont font120 ;
+    private BitmapFont font100 ;
 
 
     public PlayState(GameStateManager gsm, StageInfo stageInfo) {
         super(gsm);
-        background = new Texture(Gdx.files.internal("playstatebg.png"));
+        background = new Texture(Gdx.files.internal("road.png"));
         this.stageInfo = stageInfo;
         timeSinceStart = System.currentTimeMillis();
         guiCam = new OrthographicCamera();
         guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        player = new Player(50, 300);
+        player = new Player( Gdx.graphics.getWidth()/ 2, 300);
         cam.setToOrtho(false, Gdx.graphics.getWidth(), gameWidth / 2);
 
         currentProfile = ProfileManager.getInstance().getCurrentProfile();
@@ -104,11 +108,16 @@ public class PlayState extends State {
         parameter.size = 80;
         font80 = generator.generateFont(parameter);
 
+        parameter.size = 100;
+        font100 = generator.generateFont(parameter);
+
         nameLabelStyle = new Label.LabelStyle();
-        nameLabelStyle.font = font80;
+        nameLabelStyle.font = font100;
 
         label1 = new Label("", nameLabelStyle);
         label2 = new Label("", nameLabelStyle);
+        label1a = new Label("", nameLabelStyle);
+        label2a = new Label("", nameLabelStyle);
         answer1 = new Label("", nameLabelStyle);
         answer2 = new Label("", nameLabelStyle);
         questionText = new Label("", nameLabelStyle);
@@ -206,18 +215,22 @@ public class PlayState extends State {
 
     private void renderQuestionWithAnswers(BitmapFont font, SpriteBatch sb, Question question) {
 
-        questionText.setText(question.getQuestion());
+        questionText.setText(question.getQuestion().toUpperCase());
+        questionText.setAlignment(Align.center);
         questionText.setWrap(true);
-        answer1.setText(question.getAnswers().get(0));
+        answer1.setText(question.getAnswers().get(0).toUpperCase());
         answer1.setWrap(true);
-        answer2.setText(question.getAnswers().get(1));
+        answer1.setAlignment(Align.center);
+        answer2.setText(question.getAnswers().get(1).toUpperCase());
+        answer2.setAlignment(Align.center);
         answer2.setWrap(true);
 
-        questionTable.bottom();
-        questionTable.add(questionText).expandX();
+        questionTable.top();
+        questionTable.padTop(100);
+        questionTable.add(questionText).colspan(2).fillX().expandX();
         questionTable.row();
-        questionTable.add(answer1).expandX();
-        questionTable.add(answer2).expandX();
+        questionTable.add(answer1).expandX().width(Gdx.graphics.getWidth()/2-100);
+        questionTable.add(answer2).expandX().width(Gdx.graphics.getWidth()/2-100);
 
 
         stage.addActor(questionTable);
@@ -238,8 +251,8 @@ public class PlayState extends State {
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
         for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 5);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 5);
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 0);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 0);
         }
 
         sb.end();
@@ -274,12 +287,17 @@ public class PlayState extends State {
 
         sb.end();
 
-        label1.setText("SCORE: " + score);
-        label2.setText("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()));
+        label1.setText("SCORE: ");
+        label1a.setText("" + score);
+        label2.setText("YOUR BEST: ");
+        label2a.setText("" + currentProfile.getStageScoreMap().get(stageInfo.getLevel()));
 
-        scoreTable.top();
+        scoreTable.bottom();
         scoreTable.add(label1).expandX();
         scoreTable.add(label2).expandX();
+        scoreTable.row();
+        scoreTable.add(label1a).expandX();
+        scoreTable.add(label2a).expandX();
 
         stage.addActor(scoreTable);
 
