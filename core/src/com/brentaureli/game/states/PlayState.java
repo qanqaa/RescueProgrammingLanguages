@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.brentaureli.game.QuizGame;
 import com.brentaureli.game.commons.StageInfo;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.profiles.ProfileManager;
@@ -74,7 +72,7 @@ public class PlayState extends State {
         guiCam = new OrthographicCamera();
         guiCam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         player = new Player(50, 300);
-        cam.setToOrtho(false, QuizGame.WIDTH, QuizGame.HEIGHT/2);
+        cam.setToOrtho(false, Gdx.graphics.getWidth(), gameWidth / 2);
 
         currentProfile = ProfileManager.getInstance().getCurrentProfile();
         timeForQuestion = currentProfile.getTimeForQuestion();
@@ -267,8 +265,8 @@ public class PlayState extends State {
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
         for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, QuizGame.WIDTH / 2, 0);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, QuizGame.WIDTH / 2, 0);
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 5);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 5);
         }
 
         sb.end();
