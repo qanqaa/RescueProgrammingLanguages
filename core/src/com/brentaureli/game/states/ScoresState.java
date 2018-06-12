@@ -100,7 +100,6 @@ public class ScoresState extends State {
         handleInput();
     }
 
-    //TODO: add FreeTypeFontGenerator to get scalable bitmap fonts
 
     @Override
     public void render(SpriteBatch sb) {

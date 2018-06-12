@@ -65,7 +65,6 @@ public class PlayState extends State {
     Table questionTable;
     Table scoreTable;
 
-    // TODO: background, player, font, table?
     private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     private BitmapFont font40 ;

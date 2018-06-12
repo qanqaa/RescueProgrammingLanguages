@@ -49,7 +49,6 @@ public class MenuState extends State {
 
 
     public MenuState(GameStateManager gsm) {
-        //TODO: LOAD PROFILE FROM MEMORY/CACHE/DATABASE?
         super(gsm);
 
 
