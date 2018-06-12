@@ -29,13 +29,12 @@ import java.util.Map;
 public class PlayState extends State {
     private Profile currentProfile;
 
-    private boolean peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);;
-    private float xRot; // here
+    private boolean peripheralAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+    private float xRot;
     private int gameWidth = Gdx.graphics.getWidth();
     private int gameHeight = Gdx.graphics.getHeight();
     private static final int OPTIONS_AMOUNT = 10;
     private int currentQuestion = 0;
-    private BitmapFont font = new BitmapFont();
     private int velocity = 100;
     private Player player;
     private QuestionManager questionManager = new QuestionManager();
@@ -51,9 +50,17 @@ public class PlayState extends State {
     private float gameSpeed1s = velocity * 2.3f;
     private Texture background;
     private StageInfo stageInfo;
+    Label.LabelStyle nameLabelStyle;
+    Label label1;
+    Label label2;
+    Label questionText;
+    Label answer1;
+    Label answer2;
     Stage stage;
-    Stage stageq;
-
+    GlyphLayout stageLayout;
+    Table table;
+    Table questionTable;
+    Table scoreTable;
 
     // TODO: background, player, font, table?
     private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
@@ -97,9 +104,23 @@ public class PlayState extends State {
         parameter.size = 80;
         font80 = generator.generateFont(parameter);
 
+        nameLabelStyle = new Label.LabelStyle();
+        nameLabelStyle.font = font80;
 
+        label1 = new Label("", nameLabelStyle);
+        label2 = new Label("", nameLabelStyle);
+        answer1 = new Label("", nameLabelStyle);
+        answer2 = new Label("", nameLabelStyle);
+        questionText = new Label("", nameLabelStyle);
+        stageLayout = new GlyphLayout();
+        questionTable = new Table();
+        questionTable.setFillParent(true);
+        scoreTable = new Table();
+        scoreTable.setFillParent(true);
 
-
+        questionText.setWrap(true);
+        answer2.setWrap(true);
+        answer1.setWrap(true);
     }
 
     private List<Option> setGameDifficulty() {
@@ -133,32 +154,9 @@ public class PlayState extends State {
     @Override
     public void update(float dt) {
 
-        stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
-
-        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
-
-        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
-//        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-//        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-//        parameter.size = 120;
-//        BitmapFont font12 = generator.generateFont(parameter);
-        nameLabelStyle.font = font120;
-
-        Label label1 = new Label("SCORE: "+ score,nameLabelStyle);
-        Label label2 = new Label("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), nameLabelStyle);
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.top();
-        table.add(label1).expandX();
-        table.add(label2).expandX();
-
-
-        stage.addActor(table);
-
         if(peripheralAvailable) {
             xRot = Gdx.input.getAccelerometerX();
-            Gdx.app.log("ACCELEROMETER", "NANANAN:  " + xRot);
+            Gdx.app.log("ACCELEROMETER", "" + xRot);
         }
             if (xRot < -1){
                 player.moveRight();
@@ -208,52 +206,27 @@ public class PlayState extends State {
 
     private void renderQuestionWithAnswers(BitmapFont font, SpriteBatch sb, Question question) {
 
+        questionText.setText(question.getQuestion());
+        questionText.setWrap(true);
+        answer1.setText(question.getAnswers().get(0));
+        answer1.setWrap(true);
+        answer2.setText(question.getAnswers().get(1));
+        answer2.setWrap(true);
 
-        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        nameLabelStyle.font = font80;
-
-
-        Label quest = new Label("" + question.getQuestion(),nameLabelStyle);
-        quest.setWrap(true);
-        Label ans1 = new Label("" + question.getAnswers().get(0),nameLabelStyle);
-        ans1.setWrap(true);
-        Label ans2 = new Label("" + question.getAnswers().get(1),nameLabelStyle);
-        ans2.setWrap(true);
-
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.bottom();
-        table.add(quest).expandX();
-        table.row();
-        table.add(ans1).expandX();
-        table.add(ans2).expandX();
+        questionTable.bottom();
+        questionTable.add(questionText).expandX();
+        questionTable.row();
+        questionTable.add(answer1).expandX();
+        questionTable.add(answer2).expandX();
 
 
-        stage.addActor(table);
-
-//        GlyphLayout glyphLayout = new GlyphLayout();
-//        glyphLayout.setText(font120, question.getQuestion());
-//        float width = glyphLayout.width;
-//        float height = glyphLayout.height;
-//
-//
-//
-//        font120.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
-//        glyphLayout.setText(font, question.getQuestion());
-//        font120.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
-//        glyphLayout.setText(font, question.getQuestion());
-//        font120.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+        stage.addActor(questionTable);
     }
 
     @Override
     public void render(SpriteBatch sb) {
-
-        stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
-
-        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
 
         sb.setProjectionMatrix(guiCam.combined);
         sb.begin();
@@ -272,23 +245,16 @@ public class PlayState extends State {
         sb.end();
 
 
-
         sb.setProjectionMatrix(guiCam.combined);
         sb.begin();
-        //sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
             setStageTextOpacity(font120, System.currentTimeMillis() - timeSinceStart);
-            GlyphLayout stageLayout = new GlyphLayout();
             stageLayout.setText(font120, stageInfo.getStageName());
             float width = stageLayout.width;
             float height = stageLayout.height;
-//            parameter.size = 120;
-//            font12 = generator.generateFont(parameter);
-            font120.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
+            font120.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width / 2, gameHeight / 4 - height / 2);
             font120.setColor(1, 1, 1, 1);
         }
-//        parameter.size = 20;
-//        font12 = generator.generateFont(parameter);
         if (currentQuestion == 0) {
             if (player.getPosition().y > gameSpeed1s * stageInfoTimeSeconds && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
                 renderQuestionWithAnswers(font40, sb, options.get(currentQuestion).getQuestion());
@@ -308,28 +274,17 @@ public class PlayState extends State {
 
         sb.end();
 
+        label1.setText("SCORE: " + score);
+        label2.setText("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()));
 
+        scoreTable.top();
+        scoreTable.add(label1).expandX();
+        scoreTable.add(label2).expandX();
 
-        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
-//        parameter.size = 120;
-//        BitmapFont font12 = generator.generateFont(parameter);
-        nameLabelStyle.font = font120;
-
-        Label label1 = new Label("SCORE: "+ score,nameLabelStyle);
-        Label label2 = new Label("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), nameLabelStyle);
-
-        Table table = new Table();
-        table.setFillParent(true);
-        table.top();
-        table.add(label1).expandX();
-        table.add(label2).expandX();
-
-
-        stage.addActor(table);
+        stage.addActor(scoreTable);
 
         stage.draw();
         stage.act();
-
     }
 
 
@@ -337,10 +292,10 @@ public class PlayState extends State {
         long stageInfoTimeMax = 1000 * stageInfoTimeSeconds;
         float opacityChange = 2f / stageInfoTimeMax;
         if (timeDifference < (stageInfoTimeMax / 2)) {
-            font120.setColor(1, 1, 1, 1);
+            font.setColor(1, 1, 1, 1);
         } else {
             float opacity = 1f - ((timeDifference - stageInfoTimeMax / 2) * opacityChange);
-            font120.setColor(1, 1, 1, opacity);
+            font.setColor(1, 1, 1, opacity);
         }
     }
 
@@ -349,10 +304,12 @@ public class PlayState extends State {
     @Override
     public void dispose() {
         player.dispose();
-        for (Option option : options)
+        for (Option option : options) {
             option.dispose();
+        }
         font20.dispose();
         font40.dispose();
+        font80.dispose();
         font120.dispose();
         background.dispose();
         stage.dispose();
