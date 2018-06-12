@@ -43,10 +43,8 @@ public class EndGameState extends State {
 
     private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    private BitmapFont font12 = generator.generateFont(parameter);
+    private BitmapFont font12;
 
-
-    // TODO: freefont, table, play again button init, exit button init
 
     public EndGameState(GameStateManager gsm, int score, boolean newRecord) {
         super(gsm);
@@ -64,6 +62,8 @@ public class EndGameState extends State {
         playAgainTextureRegion = new TextureRegion(playAgainBtn);
         playAgainTexRegionDrawable = new TextureRegionDrawable(playAgainTextureRegion);
         playAgainButton = new ImageButton(playAgainTexRegionDrawable); //Set the button up
+        parameter.size = 100;
+        font12 = generator.generateFont(parameter);
 
         stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
 
@@ -116,8 +116,6 @@ public class EndGameState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
-        parameter.size = 100;
-        font12 = generator.generateFont(parameter);
         GlyphLayout glyphLayout = new GlyphLayout();
         glyphLayout.setText(font, yourScoreText);
         sb.begin();
@@ -140,6 +138,7 @@ public class EndGameState extends State {
         background.dispose();
         playAgainBtn.dispose();
         exitBtn.dispose();
+        stage.dispose();
 
     }
 }
