@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.brentaureli.game.states.PlayState;
 
 public class Player {
     private int MOVEMENT = 0;
@@ -25,7 +26,7 @@ public class Player {
     public void update(float dt){
         playerAnimation.update(dt);
         velocity.scl(dt);
-        position.add(MOVEMENT, velocity.y, 0);
+        position.add(MOVEMENT * dt, velocity.y, 0);
         MOVEMENT=0;
         if(position.y < 0)
             position.y = 0;
@@ -48,12 +49,12 @@ public class Player {
 
     public void moveLeft(){
         if (position.x > 0) {
-            MOVEMENT = -50;
+            MOVEMENT = -330;
         }
     }
     public void moveRight(){
         if (position.x + bounds.width < Gdx.graphics.getWidth()) {
-            MOVEMENT = 50;
+            MOVEMENT = 330;
         }
     }
 
