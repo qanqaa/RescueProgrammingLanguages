@@ -11,6 +11,9 @@ public interface HighscoreDao {
     @Query("SELECT * FROM Highscore ORDER BY user_highscore DESC LIMIT 10" )
     List<Highscore> getAll();
 
+    @Query("DELETE FROM Highscore")
+    void nuke();
+
     @Insert
     void insert(Highscore highscore);
 }

@@ -11,6 +11,9 @@ public interface QuestionDao {
     @Query("SELECT * FROM Question WHERE category = :category")
     List<Question> getAll(int category);
 
+    @Query("DELETE FROM Question")
+    void nuke();
+
     @Insert
     void insertAll(Question... questions);
 }

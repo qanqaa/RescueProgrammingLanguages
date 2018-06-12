@@ -24,6 +24,7 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
     public abstract QuestionDao questionDao();
 
     public synchronized static AppDatabase getInstance(Context context) {
+
         if (INSTANCE == null) {
             INSTANCE = buildDatabase(context);
         }
@@ -49,8 +50,15 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
                 .build();
     }
 
+    public void nukeDatabases() {
+        highscoreDao().nuke();
+        questionDao().nuke();
+        questionDao().insertAll(Question.populateData());
+    }
+
     @Override
     public List<com.brentaureli.game.questions.Question> getQuestions(int category) {
+        nukeDatabases();
         List<Question> questions = INSTANCE.questionDao().getAll(category);
         List<com.brentaureli.game.questions.Question> gameQuestions = new ArrayList<com.brentaureli.game.questions.Question>();
         for(Question q : questions) {
