@@ -136,6 +136,10 @@ public class EndGameState extends State {
     @Override
     public void dispose() {
         font.dispose();
+        font12.dispose();
+        background.dispose();
+        playAgainBtn.dispose();
+        exitBtn.dispose();
 
     }
 }

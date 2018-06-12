@@ -54,11 +54,17 @@ public class PlayState extends State {
     private Texture background;
     private StageInfo stageInfo;
     Stage stage;
+    Stage stageq;
+
 
     // TODO: background, player, font, table?
     private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    private BitmapFont font12 = generator.generateFont(parameter);
+    private BitmapFont font40 ;
+    private BitmapFont font80 ;
+    private BitmapFont font20 ;
+    private BitmapFont font120 ;
+
 
     public PlayState(GameStateManager gsm, StageInfo stageInfo) {
         super(gsm);
@@ -81,6 +87,17 @@ public class PlayState extends State {
         options = setGameDifficulty();
 
 
+        parameter.size = 120;
+        font120 = generator.generateFont(parameter);
+
+        parameter.size = 20;
+        font20 = generator.generateFont(parameter);
+
+        parameter.size = 40;
+        font40 = generator.generateFont(parameter);
+
+        parameter.size = 80;
+        font80 = generator.generateFont(parameter);
 
 
 
@@ -123,11 +140,11 @@ public class PlayState extends State {
         Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
         Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 120;
-        BitmapFont font12 = generator.generateFont(parameter);
-        nameLabelStyle.font = font12;
+//        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+//        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+//        parameter.size = 120;
+//        BitmapFont font12 = generator.generateFont(parameter);
+        nameLabelStyle.font = font120;
 
         Label label1 = new Label("SCORE: "+ score,nameLabelStyle);
         Label label2 = new Label("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), nameLabelStyle);
@@ -191,25 +208,54 @@ public class PlayState extends State {
         return stageScoreMap.values().stream().reduce(0, Integer::sum);
     }
 
-    private void renderQuestionWithAnswers(BitmapFont font12, SpriteBatch sb, Question question) {
-        GlyphLayout glyphLayout = new GlyphLayout();
-        parameter.size = 40;
-        font12 = generator.generateFont(parameter);
-        glyphLayout.setText(font12, question.getQuestion());
-        float width = glyphLayout.width;
-        float height = glyphLayout.height;
+    private void renderQuestionWithAnswers(BitmapFont font, SpriteBatch sb, Question question) {
 
 
+        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        nameLabelStyle.font = font80;
 
-        font12.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
-        glyphLayout.setText(font, question.getQuestion());
-        font12.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
-        glyphLayout.setText(font, question.getQuestion());
-        font12.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+
+        Label quest = new Label("" + question.getQuestion(),nameLabelStyle);
+        quest.setWrap(true);
+        Label ans1 = new Label("" + question.getAnswers().get(0),nameLabelStyle);
+        ans1.setWrap(true);
+        Label ans2 = new Label("" + question.getAnswers().get(1),nameLabelStyle);
+        ans2.setWrap(true);
+
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom();
+        table.add(quest).expandX();
+        table.row();
+        table.add(ans1).expandX();
+        table.add(ans2).expandX();
+
+
+        stage.addActor(table);
+
+//        GlyphLayout glyphLayout = new GlyphLayout();
+//        glyphLayout.setText(font120, question.getQuestion());
+//        float width = glyphLayout.width;
+//        float height = glyphLayout.height;
+//
+//
+//
+//        font120.draw(sb, glyphLayout, gameWidth / 2 - width / 2, gameHeight / 2 - height);
+//        glyphLayout.setText(font, question.getQuestion());
+//        font120.draw(sb, question.getAnswers().get(0), gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
+//        glyphLayout.setText(font, question.getQuestion());
+//        font120.draw(sb, question.getAnswers().get(1), 3 * gameWidth / 4 - glyphLayout.width / 4, gameHeight / 2 + glyphLayout.height);
     }
 
     @Override
     public void render(SpriteBatch sb) {
+
+        stage = new Stage(new ScreenViewport()); //Set up a stage for the ui
+
+        Gdx.input.setInputProcessor(stage); //Start taking input from the ui
 
         sb.setProjectionMatrix(guiCam.combined);
         sb.begin();
@@ -221,8 +267,8 @@ public class PlayState extends State {
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
         for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, QuizGame.WIDTH / 2, 10);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, QuizGame.WIDTH / 2, 10);
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, QuizGame.WIDTH / 2, 0);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, QuizGame.WIDTH / 2, 0);
         }
 
         sb.end();
@@ -233,28 +279,28 @@ public class PlayState extends State {
         sb.begin();
         //sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (System.currentTimeMillis() - timeSinceStart < stageInfoTimeSeconds * 1000) {
-            setStageTextOpacity(font12, System.currentTimeMillis() - timeSinceStart);
+            setStageTextOpacity(font120, System.currentTimeMillis() - timeSinceStart);
             GlyphLayout stageLayout = new GlyphLayout();
-            stageLayout.setText(font12, stageInfo.getStageName());
+            stageLayout.setText(font120, stageInfo.getStageName());
             float width = stageLayout.width;
             float height = stageLayout.height;
-            parameter.size = 120;
-            font12 = generator.generateFont(parameter);
-            font12.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
-            font12.setColor(1, 1, 1, 1);
+//            parameter.size = 120;
+//            font12 = generator.generateFont(parameter);
+            font120.draw(sb, stageInfo.getStageName(), gameWidth / 2 - width * 2, gameHeight / 2 - height * 2);
+            font120.setColor(1, 1, 1, 1);
         }
-        parameter.size = 20;
-        font12 = generator.generateFont(parameter);
+//        parameter.size = 20;
+//        font12 = generator.generateFont(parameter);
         if (currentQuestion == 0) {
             if (player.getPosition().y > gameSpeed1s * stageInfoTimeSeconds && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
-                renderQuestionWithAnswers(font12, sb, options.get(currentQuestion).getQuestion());
+                renderQuestionWithAnswers(font40, sb, options.get(currentQuestion).getQuestion());
             } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
                 currentQuestion++;
             }
         } else {
             if (currentQuestion < OPTIONS_AMOUNT) {
                 if (player.getPosition().y > (options.get(currentQuestion - 1).getPosTopTube().y + timeBetweenQuestions * gameSpeed1s) && player.getPosition().y + gameHeight / 6 < options.get(currentQuestion).getPosTopTube().y) {
-                    renderQuestionWithAnswers(font12, sb, options.get(currentQuestion).getQuestion());
+                    renderQuestionWithAnswers(font40, sb, options.get(currentQuestion).getQuestion());
                 } else if (player.getPosition().y > options.get(currentQuestion).getPosTopTube().y) {
                     currentQuestion++;
                 }
@@ -264,19 +310,39 @@ public class PlayState extends State {
 
         sb.end();
 
+
+
+        Label.LabelStyle nameLabelStyle = new Label.LabelStyle();
+//        parameter.size = 120;
+//        BitmapFont font12 = generator.generateFont(parameter);
+        nameLabelStyle.font = font120;
+
+        Label label1 = new Label("SCORE: "+ score,nameLabelStyle);
+        Label label2 = new Label("YOUR BEST: " + currentProfile.getStageScoreMap().get(stageInfo.getLevel()), nameLabelStyle);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.top();
+        table.add(label1).expandX();
+        table.add(label2).expandX();
+
+
+        stage.addActor(table);
+
         stage.draw();
         stage.act();
+
     }
 
 
-    private void setStageTextOpacity(BitmapFont font12, long timeDifference) {
+    private void setStageTextOpacity(BitmapFont font, long timeDifference) {
         long stageInfoTimeMax = 1000 * stageInfoTimeSeconds;
         float opacityChange = 2f / stageInfoTimeMax;
         if (timeDifference < (stageInfoTimeMax / 2)) {
-            font12.setColor(1, 1, 1, 1);
+            font120.setColor(1, 1, 1, 1);
         } else {
             float opacity = 1f - ((timeDifference - stageInfoTimeMax / 2) * opacityChange);
-            font12.setColor(1, 1, 1, opacity);
+            font120.setColor(1, 1, 1, opacity);
         }
     }
 
@@ -287,7 +353,11 @@ public class PlayState extends State {
         player.dispose();
         for (Option option : options)
             option.dispose();
-        font12.dispose();
+        font20.dispose();
+        font40.dispose();
+        font120.dispose();
         background.dispose();
+        stage.dispose();
+
     }
 }
