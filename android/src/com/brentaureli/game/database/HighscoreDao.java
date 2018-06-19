@@ -8,7 +8,7 @@ import java.util.List;
 
 @Dao
 public interface HighscoreDao {
-    @Query("SELECT * FROM Highscore ORDER BY user_highscore DESC LIMIT 10" )
+    @Query("SELECT * FROM Highscore ORDER BY user_highscore DESC")
     List<Highscore> getAll();
 
     @Query("DELETE FROM Highscore")

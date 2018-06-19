@@ -250,8 +250,8 @@ public class PlayState extends State {
         sb.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
 
         for (Option option : options) {
-            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 0);
-            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 0);
+            sb.draw(option.getTopTube(), option.getPosTopTube().x, option.getPosTopTube().y, gameWidth / 2, 5);
+            sb.draw(option.getBottomTube(), option.getPosBotTube().x, option.getPosBotTube().y, gameWidth / 2, 5);
         }
 
         sb.end();

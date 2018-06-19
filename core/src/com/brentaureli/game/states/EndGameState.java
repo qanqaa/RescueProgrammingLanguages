@@ -17,6 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.brentaureli.game.QuizGame;
+import com.brentaureli.game.profiles.ProfileManager;
+import com.brentaureli.game.scores.PlayerScore;
+
+import java.util.List;
 
 public class EndGameState extends State {
 
@@ -124,6 +128,13 @@ public class EndGameState extends State {
         if (newRecord) {
             glyphLayout.setText(font, newHighScoreText);
             font12.draw(sb, newHighScoreText, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 + 200);
+            List<PlayerScore> playerScoreList = QuizGame.getInstance().database.getHighscore();
+            PlayerScore score = playerScoreList.stream().filter(playerScore -> playerScore.getProfile().getName()
+                    .equals(ProfileManager.getInstance().getCurrentProfile().getName())).findFirst().get();
+            int index = playerScoreList.indexOf(score);
+            String text = "YOUR CURRENT RANK: " + index;
+            glyphLayout.setText(font, text);
+            font12.draw(sb, text, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 + 100);
         }
         sb.end();
 

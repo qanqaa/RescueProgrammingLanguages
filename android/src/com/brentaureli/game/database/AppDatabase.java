@@ -49,10 +49,10 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
                 .build();
     }
 
-//    public void nukeDatabases() {
-//        questionDao().nuke();
-//        questionDao().insertAll(Question.populateData());
-//    }
+    public void nukeDatabases() {
+        questionDao().nuke();
+        questionDao().insertAll(Question.populateData());
+    }
 
     @Override
     public List<com.brentaureli.game.questions.Question> getQuestions(int category) {
@@ -67,7 +67,7 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
     @Override
     public List<PlayerScore> getHighscore() {
         List<Highscore> highscores = INSTANCE.highscoreDao().getAll();
-        List<PlayerScore> playerScores = new ArrayList<PlayerScore>();
+        List<PlayerScore> playerScores = new ArrayList<>();
         for(Highscore h : highscores) {
             playerScores.add(new PlayerScore(new Profile(h.getName()), h.getScore()));
         }
