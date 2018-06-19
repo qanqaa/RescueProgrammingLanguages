@@ -6,7 +6,6 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
-
 import com.brentaureli.game.DatabaseInterface;
 import com.brentaureli.game.profiles.Profile;
 import com.brentaureli.game.scores.PlayerScore;
@@ -50,15 +49,13 @@ public abstract class AppDatabase extends RoomDatabase implements DatabaseInterf
                 .build();
     }
 
-    public void nukeDatabases() {
-        highscoreDao().nuke();
-        questionDao().nuke();
-        questionDao().insertAll(Question.populateData());
-    }
+//    public void nukeDatabases() {
+//        questionDao().nuke();
+//        questionDao().insertAll(Question.populateData());
+//    }
 
     @Override
     public List<com.brentaureli.game.questions.Question> getQuestions(int category) {
-        nukeDatabases();
         List<Question> questions = INSTANCE.questionDao().getAll(category);
         List<com.brentaureli.game.questions.Question> gameQuestions = new ArrayList<com.brentaureli.game.questions.Question>();
         for(Question q : questions) {
