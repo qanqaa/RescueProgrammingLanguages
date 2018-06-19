@@ -31,8 +31,8 @@ public class ScoresState extends State {
 
     private Texture exitBtn;
 
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private TextureRegion exitTextureRegion;
     private TextureRegionDrawable exitTexRegionDrawable;
     private ImageButton exitButton;
@@ -46,14 +46,14 @@ public class ScoresState extends State {
         font = new BitmapFont();
         background = new Texture(Gdx.files.internal("highscoresbg.png"));
         exitBtn = new Texture("exitbutton.png");
-        playerScoreList = PlayerScoreManager.getInstance().getHighscores();
+        playerScoreList = PlayerScoreManager.getInstance().getRandom10HighScores();
         if (playerScoreList.size() > 10) {
             playerScoreList.subList(10, playerScoreList.size()).clear();
         }
         defaultPhoto = new Texture(Gdx.files.internal(photosFolder + "defaultPhoto.png"));
 
-
-
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         exitTextureRegion = new TextureRegion(exitBtn);
         exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
         exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up
