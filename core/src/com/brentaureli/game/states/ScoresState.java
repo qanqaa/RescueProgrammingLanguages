@@ -3,7 +3,6 @@ package com.brentaureli.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -32,11 +31,12 @@ public class ScoresState extends State {
 
     private Texture exitBtn;
 
-
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     private TextureRegion exitTextureRegion;
     private TextureRegionDrawable exitTexRegionDrawable;
     private ImageButton exitButton;
-
+    BitmapFont font12;
     private Stage stage;
 
 
@@ -68,7 +68,8 @@ public class ScoresState extends State {
 
         table.add(exitButton);
         table.row();
-
+        parameter.size = 120;
+        font12 = generator.generateFont(parameter);
         stage.addActor(table);
 
         exitButton.addListener(new ClickListener() {
@@ -106,7 +107,6 @@ public class ScoresState extends State {
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
 
-        GlyphLayout layout = new GlyphLayout();
         sb.begin();
         sb.draw(background, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         int nameWidth = width / 6;
@@ -114,12 +114,7 @@ public class ScoresState extends State {
         int photoWidth = nameWidth - 50;
 
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 120;
-        BitmapFont font12 = generator.generateFont(parameter);
         height -= 800;
-        //TODO: photo Manager
         for (PlayerScore playerScore : playerScoreList) {
             if (playerScore.getProfile().getPhoto() != null) {
                 photo = new Texture(Gdx.files.internal(photosFolder + playerScore.getProfile().getPhoto()));
