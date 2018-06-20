@@ -142,7 +142,7 @@ public class PlayState extends State {
 
     @Override
     protected void handleInput() {
-//        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+//        if(Gdx.input.isKeyPressed(Input.Keys.BACK)){
 //            player.moveLeft();
 //         }
 //        if(Gdx.input.isKeyPressed(Input.Keys.D)){
