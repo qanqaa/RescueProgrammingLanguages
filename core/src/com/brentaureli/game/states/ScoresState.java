@@ -1,7 +1,6 @@
 package com.brentaureli.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,8 +31,8 @@ public class ScoresState extends State {
 
     private Texture exitBtn;
 
-    FreeTypeFontGenerator generator;
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
     private TextureRegion exitTextureRegion;
     private TextureRegionDrawable exitTexRegionDrawable;
     private ImageButton exitButton;
@@ -53,8 +52,6 @@ public class ScoresState extends State {
         }
         defaultPhoto = new Texture(Gdx.files.internal(photosFolder + "defaultPhoto.png"));
 
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Autobus-Bold.ttf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         exitTextureRegion = new TextureRegion(exitBtn);
         exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
         exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up
@@ -132,9 +129,6 @@ public class ScoresState extends State {
         stage.draw();
         stage.act();
 
-        generator.dispose();
-        font12.dispose();
-
     }
 
     @Override
@@ -147,5 +141,7 @@ public class ScoresState extends State {
         defaultPhoto.dispose();
         background.dispose();
         stage.dispose();
+        generator.dispose();
+        font12.dispose();
     }
 }
