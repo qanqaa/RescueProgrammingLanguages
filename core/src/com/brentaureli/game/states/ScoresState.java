@@ -51,7 +51,7 @@ public class ScoresState extends State {
             playerScoreList.subList(10, playerScoreList.size()).clear();
         }
         defaultPhoto = new Texture(Gdx.files.internal(photosFolder + "defaultPhoto.png"));
-
+        photo = defaultPhoto;
         exitTextureRegion = new TextureRegion(exitBtn);
         exitTexRegionDrawable = new TextureRegionDrawable(exitTextureRegion);
         exitButton = new ImageButton(exitTexRegionDrawable); //Set the button up

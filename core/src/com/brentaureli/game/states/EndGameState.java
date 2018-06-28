@@ -132,7 +132,7 @@ public class EndGameState extends State {
             PlayerScore score = playerScoreList.stream().filter(playerScore -> playerScore.getProfile().getName()
                     .equals(ProfileManager.getInstance().getCurrentProfile().getName())).findFirst().get();
             int index = playerScoreList.indexOf(score);
-            String text = "YOUR CURRENT RANK: " + index;
+            String text = "YOUR CURRENT RANK: " + (index + 1);
             glyphLayout.setText(font, text);
             font12.draw(sb, text, gameWidth / 2 - glyphLayout.width / 2, gameHeight / 2 + 100);
         }

@@ -32,11 +32,11 @@ public class ProfileManager {
     }
 
     public void updateCurrentProfile(String name, float time) {
+        Profile profile = new Profile(name, time);
         prefs.putString("profileName", name);
         prefs.putFloat("profileTime", time);
         prefs.flush();
-        this.currentProfile.setName(name);
-        this.currentProfile.setTimeForQuestion(time);
+        this.currentProfile = profile;
     }
 
     private Profile createDefaultProfile() {
