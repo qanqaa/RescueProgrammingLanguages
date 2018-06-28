@@ -227,8 +227,8 @@ public class PlayState extends State {
         answer2.setAlignment(Align.center);
         answer2.setWrap(true);
 
-        questionTable.top();
-        questionTable.padTop(100);
+        questionTable.bottom();
+        questionTable.padBottom(100);
         questionTable.add(questionText).colspan(2).fillX().expandX();
         questionTable.row();
         questionTable.add(answer1).expandX().width(Gdx.graphics.getWidth()/2-100);
@@ -294,7 +294,7 @@ public class PlayState extends State {
         label2.setText("YOUR BEST: ");
         label2a.setText("" + currentProfile.getStageScoreMap().get(stageInfo.getLevel()));
 
-        scoreTable.bottom();
+        scoreTable.top();
         scoreTable.add(label1).expandX();
         scoreTable.add(label2).expandX();
         scoreTable.row();

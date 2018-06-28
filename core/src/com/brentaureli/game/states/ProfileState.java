@@ -105,7 +105,7 @@ public class ProfileState extends State {
                 Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
                 String name = nameField.getText();
                 float time = Float.parseFloat(questionsTimeField.getText());
-                ProfileManager.getInstance().updateCurrentProfile(name, time);
+                ProfileManager.getInstance().updateCurrentProfile(name);
                 Gdx.app.log("CLIIIICK", tmp.x + " " + tmp.y);
                 gsm.set(new MenuState(gsm));
             }

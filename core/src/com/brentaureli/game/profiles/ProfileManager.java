@@ -39,6 +39,14 @@ public class ProfileManager {
         this.currentProfile = profile;
     }
 
+
+    public void updateCurrentProfile(String name) {
+        Profile profile = new Profile(name);
+        prefs.putString("profileName", name);
+        prefs.flush();
+        this.currentProfile = profile;
+    }
+
     private Profile createDefaultProfile() {
         prefs.putString("profileName", "Player");
         prefs.putFloat("profileTime", 5.0f);
