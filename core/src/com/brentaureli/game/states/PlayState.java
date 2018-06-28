@@ -188,8 +188,11 @@ public class PlayState extends State {
             if (tube.getPosTopTube().y - player.getPosition().y < 5) {
                 updateScore();
             }
-            if (tube.collides(player.getBounds()) || player.getPosition().y > maxY) {
+            if (tube.collides(player.getBounds())) {
                 gsm.set(new EndGameState(gsm, score, checkPlayerHighScore(score)));
+            }
+            if (player.getPosition().y > maxY) {
+                gsm.set(new YouWinState(gsm, score, checkPlayerHighScore(score)));
             }
         }
         cam.update();

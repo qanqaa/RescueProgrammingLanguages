@@ -8,7 +8,7 @@ public class Profile {
     private String name;
     private String photo;
     private Map<Integer, Integer> stageScoreMap = new HashMap<>();
-    private float timeForQuestion = 5;
+    private float timeForQuestion = 10;
 
     private void initializeStageScores() {
         stageScoreMap.put(1, 0);
